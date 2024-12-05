@@ -19,26 +19,14 @@ def format_price(price_str):
     except (ValueError, TypeError):
         return 'N/A'
 
-def generate_report():
-    # Get the most recent date
-    latest_doc = collection.find_one(sort=[('date', -1)])
-    
-    if not latest_doc:
-        print("No data found in the database")
-        return
-    
-    report_date = latest_doc['date'].date()
-    
-    # Create report directory if it doesn't exist
-    os.makedirs('reports', exist_ok=True)
-    
-    # Generate report file
-    report_file = f'reports/price_report_{report_date}.txt'
+def generate_single_report(doc, report_file):
+    """Generate a report for a single day"""
     with open(report_file, 'w') as f:
+        report_date = doc['date'].date()
         f.write(f"Wholesale Vegetable Price Report for {report_date}\n")
         f.write("=" * 80 + "\n\n")
         
-        if 'data' in latest_doc and 'rows' in latest_doc['data']:
+        if 'data' in doc and 'rows' in doc['data']:
             # Write wholesale prices
             f.write("Wholesale Prices (Rs./kg):\n")
             f.write("-" * 80 + "\n")
@@ -46,7 +34,7 @@ def generate_report():
             f.write(f"{'':20} {'Yesterday':>14} {'Today':>15} {'Yesterday':>14} {'Today':>15}\n")
             f.write("-" * 80 + "\n")
             
-            for row in latest_doc['data']['rows']:
+            for row in doc['data']['rows']:
                 item = row['item']
                 pettah = row['wholesale']['pettah']
                 dambulla = row['wholesale']['dambulla']
@@ -61,7 +49,7 @@ def generate_report():
             f.write(f"{'':20} {'Yesterday':>14} {'Today':>15} {'Yesterday':>14} {'Today':>15}\n")
             f.write("-" * 80 + "\n")
             
-            for row in latest_doc['data']['rows']:
+            for row in doc['data']['rows']:
                 item = row['item']
                 pettah = row['retail']['pettah']
                 dambulla = row['retail']['dambulla']
@@ -75,7 +63,7 @@ def generate_report():
             f.write(f"{'Item':<20} {'Yesterday':>14} {'Today':>15}\n")
             f.write("-" * 50 + "\n")
             
-            for row in latest_doc['data']['rows']:
+            for row in doc['data']['rows']:
                 item = row['item']
                 narahenpita = row['retail']['narahenpita']
                 
@@ -84,6 +72,19 @@ def generate_report():
         f.write("\nNote: All prices are in Sri Lankan Rupees (Rs.)\n")
     
     print(f"Report generated: {report_file}")
+
+def generate_report():
+    # Create report directory if it doesn't exist
+    os.makedirs('reports', exist_ok=True)
+    
+    # Get all documents sorted by date
+    documents = collection.find().sort('date', 1)
+    
+    # Generate a report for each day
+    for doc in documents:
+        report_date = doc['date'].date()
+        report_file = f'reports/price_report_{report_date}.txt'
+        generate_single_report(doc, report_file)
 
 if __name__ == "__main__":
     generate_report()
