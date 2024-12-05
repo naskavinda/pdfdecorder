@@ -1,0 +1,16 @@
+Today's Wholesale Vegetable Prices - 2024-12-04
+================================================================================
+
+Vegetable    |          Pettah |        Dambulla
+-------------+------------------+----------------
+Beans        | Rs.       900.00 | Rs.       950.00
+Carrot       | Rs.       100.00 | Rs.       150.00
+Cabbage      | Rs.        80.00 | Rs.       130.00
+Tomato       | Rs.       200.00 | Rs.       250.00
+Brinjal      | Rs.       300.00 | Rs.       350.00
+Pumpkin      | Rs.       140.00 | Rs.       180.00
+Snake gourd  | Rs.       300.00 | Rs.       350.00
+Green Chilli | Rs.       600.00 | Rs.       700.00
+Lime         | Rs.       300.00 | Rs.       400.00
+
+Note: These are today's wholesale prices for both markets.
