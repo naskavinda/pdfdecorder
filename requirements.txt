@@ -1,5 +1,5 @@
 tabula-py>=2.9.0
-pymongo==4.6.1
+pymongo>=4.9.0
 pandas==2.2.3
 pdfplumber==0.10.3
 opencv-python>=4.8.0
