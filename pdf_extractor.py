@@ -13,35 +13,28 @@ def safe_get_price(cell):
     """Safely get price from cell"""
     try:
         if cell and not pd.isna(cell):
+            # Convert cell to string and remove extra spaces
             price_str = str(cell).strip()
             
+            # Return empty if n.a.
+            if price_str == 'n.a.':
+                return '', ''
+                
             # Handle multiple prices separated by newlines
             if '\n' in price_str:
                 prices = price_str.split('\n')
-                if prices:
-                    # Take the first price for the current item
-                    price_str = prices[0]
+                if len(prices) >= 2:
+                    # Return both prices
+                    price1 = prices[0].replace(' ', '')
+                    price2 = prices[1].replace(' ', '')
+                    return price1, price2
             
-            # Remove commas and spaces
-            price_str = price_str.replace(',', '').replace(' ', '')
+            # Remove spaces but keep commas for now
+            price_str = price_str.replace(' ', '')
             
-            # Try to split by \r first
-            if '\\r' in price_str:
-                prices = price_str.split('\\r')
-            else:
-                # If no \r, try to split in the middle
-                if len(price_str) >= 6:  # Two 3-digit numbers minimum
-                    mid = len(price_str) // 2
-                    prices = [price_str[:mid], price_str[mid:]]
-                else:
-                    prices = [price_str]
+            # Return the price as is, with commas preserved
+            return price_str, price_str
             
-            # Clean up prices
-            prices = [p.strip() for p in prices if p and p.strip() and p.strip() != 'n.a']
-            if len(prices) >= 2:
-                return prices[0], prices[1]
-            elif len(prices) == 1:
-                return prices[0], prices[0]
     except Exception as e:
         print(f"Error processing price: {str(e)}")
     return '', ''
@@ -100,51 +93,77 @@ def find_section_boundaries(table, header_row_idx):
     
     return start_idx, end_idx
 
-def extract_prices(row):
-    """Extract prices from a row"""
-    if not row:
-        return None, None, None, None, None, None, None, None
-    
+def clean_price(price_str):
+    """
+    Clean and convert price string to float.
+    """
     try:
-        # Extract Pettah wholesale prices (yesterday/today)
-        pettah_wholesale_yesterday = row[3] if len(row) > 3 else None
-        pettah_wholesale_today = row[5] if len(row) > 5 else None
+        if not price_str or price_str == 'n.a.':
+            return None
+            
+        # Remove spaces
+        price_str = price_str.replace(' ', '')
         
-        # Extract Dambulla wholesale prices (yesterday/today)
-        dambulla_wholesale_yesterday = row[6] if len(row) > 6 else None
-        dambulla_wholesale_today = row[8] if len(row) > 8 else None
-        
-        # Extract Pettah retail prices (yesterday/today)
-        pettah_retail_yesterday = row[9] if len(row) > 9 else None 
-        pettah_retail_today = row[10] if len(row) > 10 else None
-        
-        # Extract Dambulla retail prices (yesterday/today)
-        dambulla_retail_yesterday = row[12] if len(row) > 12 else None
-        dambulla_retail_today = row[14] if len(row) > 14 else None
-        
-        # Clean up prices by removing spaces and 'n.a.'
-        prices = [pettah_wholesale_yesterday, pettah_wholesale_today,
-                 dambulla_wholesale_yesterday, dambulla_wholesale_today,
-                 pettah_retail_yesterday, pettah_retail_today,
-                 dambulla_retail_yesterday, dambulla_retail_today]
-        
-        cleaned_prices = []
-        for price in prices:
-            if not price or price == 'n.a.':
-                cleaned_prices.append(None)
-            else:
-                # Remove spaces and handle comma-separated thousands
-                price = price.replace(' ', '').replace(',', '')
-                try:
-                    cleaned_prices.append(float(price))
-                except ValueError:
-                    cleaned_prices.append(None)
-        
-        return tuple(cleaned_prices)
-        
+        # If the price starts with a comma, add a leading digit
+        if price_str.startswith(','):
+            price_str = '1' + price_str
+            
+        # Now convert to float, after removing the comma
+        return float(price_str.replace(',', ''))
     except Exception as e:
-        print(f"Error extracting prices: {e}")
-        return None, None, None, None, None, None, None, None
+        print(f"Error cleaning price {price_str}: {str(e)}")
+        return None
+
+def extract_prices(row):
+    """
+    Extract and clean price values from a row.
+    Returns tuple of (pettah_wholesale_yesterday, pettah_wholesale_today,
+                     dambulla_wholesale_yesterday, dambulla_wholesale_today,
+                     pettah_retail_yesterday, pettah_retail_today,
+                     dambulla_retail_yesterday, dambulla_retail_today,
+                     narahenpita_retail_yesterday, narahenpita_retail_today)
+    """
+    try:
+        # Print row contents for debugging
+        print(f"Raw row data: {row}")
+        print(f"Row length: {len(row)}")
+        if len(row) > 16:
+            print(f"Narahenpita yesterday (index 16): {row[16]}")
+        if len(row) > 18:
+            print(f"Narahenpita today (index 18): {row[18]}")
+            
+        # Extract Pettah wholesale prices (columns 3 and 5)
+        pettah_wholesale_y = clean_price(row[3]) if len(row) > 3 else None
+        pettah_wholesale_t = clean_price(row[5]) if len(row) > 5 else None
+        
+        # Extract Dambulla wholesale prices (columns 6 and 8)
+        dambulla_wholesale_y = clean_price(row[6]) if len(row) > 6 else None
+        dambulla_wholesale_t = clean_price(row[8]) if len(row) > 8 else None
+        
+        # Extract Pettah retail prices (columns 9 and 10)
+        pettah_retail_y = clean_price(row[9]) if len(row) > 9 else None
+        pettah_retail_t = clean_price(row[10]) if len(row) > 10 else None
+        
+        # Extract Dambulla retail prices (columns 12 and 14)
+        dambulla_retail_y = clean_price(row[12]) if len(row) > 12 else None
+        dambulla_retail_t = clean_price(row[14]) if len(row) > 14 else None
+        
+        # Extract Narahenpita retail prices (columns 16 and 18)
+        narahenpita_retail_y = clean_price(row[16]) if len(row) > 16 else None
+        narahenpita_retail_t = clean_price(row[18]) if len(row) > 18 else None
+        
+        # Print extracted Narahenpita prices for debugging
+        print(f"Extracted Narahenpita prices - Yesterday: {narahenpita_retail_y}, Today: {narahenpita_retail_t}")
+        
+        return (pettah_wholesale_y, pettah_wholesale_t,
+                dambulla_wholesale_y, dambulla_wholesale_t,
+                pettah_retail_y, pettah_retail_t,
+                dambulla_retail_y, dambulla_retail_t,
+                narahenpita_retail_y, narahenpita_retail_t)
+                
+    except Exception as e:
+        print(f"Error extracting prices: {str(e)}")
+        return None, None, None, None, None, None, None, None, None, None
 
 def process_table_data(table):
     """
@@ -193,7 +212,8 @@ def process_table_data(table):
         (pettah_wholesale_yesterday, pettah_wholesale_today,
          dambulla_wholesale_yesterday, dambulla_wholesale_today,
          pettah_retail_yesterday, pettah_retail_today,
-         dambulla_retail_yesterday, dambulla_retail_today) = extract_prices(row)
+         dambulla_retail_yesterday, dambulla_retail_today,
+         narahenpita_retail_yesterday, narahenpita_retail_today) = extract_prices(row)
         
         print(f"\nProcessing item: {item_name}")
         print(f"Unit: {unit}")
@@ -201,6 +221,7 @@ def process_table_data(table):
         print(f"Pettah retail: {pettah_retail_yesterday} / {pettah_retail_today}")
         print(f"Dambulla wholesale: {dambulla_wholesale_yesterday} / {dambulla_wholesale_today}")
         print(f"Dambulla retail: {dambulla_retail_yesterday} / {dambulla_retail_today}")
+        print(f"Narahenpita retail: {narahenpita_retail_yesterday} / {narahenpita_retail_today}")
         
         row_data = {
             'item': item_name,
@@ -220,6 +241,10 @@ def process_table_data(table):
             'dambulla_retail': {
                 'yesterday': dambulla_retail_yesterday,
                 'today': dambulla_retail_today
+            },
+            'narahenpita_retail': {
+                'yesterday': narahenpita_retail_yesterday,
+                'today': narahenpita_retail_today
             }
         }
         
