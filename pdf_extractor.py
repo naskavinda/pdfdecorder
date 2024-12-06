@@ -93,13 +93,68 @@ def find_section_boundaries(table, header_row_idx):
     
     return start_idx, end_idx
 
+def find_other_section_boundaries(table, header_row_idx):
+    """Find the start and end indices for the Other section in the table"""
+    start_idx = None
+    end_idx = None
+    
+    # Search for the OTHER section header
+    for i in range(header_row_idx, len(table)):
+        row = table[i]
+        if not row:
+            continue
+            
+        # Join the row elements to check for section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        if 'O T H E R' in row_text:
+            start_idx = i + 2  # Skip the empty row after header
+            break
+    
+    if start_idx is None:
+        print("Could not find OTHER section start")
+        return None, None
+        
+    # Search for the end of section (next section header or empty rows)
+    section_markers = ['F R U I T S', 'R I C E', 'F I S H']
+    empty_row_count = 0
+    
+    for i in range(start_idx, len(table)):
+        row = table[i]
+        if not row or all(not cell for cell in row):
+            empty_row_count += 1
+            if empty_row_count >= 3:  # Three consecutive empty rows
+                end_idx = i - 2  # Go back to before empty rows
+                break
+        else:
+            empty_row_count = 0
+            
+        # Check for next section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        for marker in section_markers:
+            if marker in row_text:
+                end_idx = i
+                break
+                
+        if end_idx:
+            break
+            
+    # If no clear end found, use a default value
+    if not end_idx:
+        print("Could not find section end")
+        # Set end index to start + 20 rows or table length, whichever is smaller
+        end_idx = min(start_idx + 20, len(table))
+        print(f"Using default end index: {end_idx}")
+    
+    return start_idx, end_idx
+
 def clean_price(price_str):
     """
     Clean and convert price string to float.
+    Returns "N/A" for null or invalid values.
     """
     try:
-        if not price_str or price_str == 'n.a.':
-            return None
+        if not price_str or pd.isna(price_str) or price_str == 'n.a.':
+            return "N/A"
             
         # Remove spaces
         price_str = price_str.replace(' ', '')
@@ -109,10 +164,11 @@ def clean_price(price_str):
             price_str = '1' + price_str
             
         # Now convert to float, after removing the comma
-        return float(price_str.replace(',', ''))
+        float_value = float(price_str.replace(',', ''))
+        return str(float_value) if float_value else "N/A"
     except Exception as e:
         print(f"Error cleaning price {price_str}: {str(e)}")
-        return None
+        return "N/A"
 
 def extract_prices(row):
     """
@@ -122,6 +178,7 @@ def extract_prices(row):
                      pettah_retail_yesterday, pettah_retail_today,
                      dambulla_retail_yesterday, dambulla_retail_today,
                      narahenpita_retail_yesterday, narahenpita_retail_today)
+    All values will be strings, with "N/A" for null values.
     """
     try:
         # Print row contents for debugging
@@ -133,24 +190,24 @@ def extract_prices(row):
             print(f"Narahenpita today (index 18): {row[18]}")
             
         # Extract Pettah wholesale prices (columns 3 and 5)
-        pettah_wholesale_y = clean_price(row[3]) if len(row) > 3 else None
-        pettah_wholesale_t = clean_price(row[5]) if len(row) > 5 else None
+        pettah_wholesale_y = clean_price(row[3]) if len(row) > 3 else "N/A"
+        pettah_wholesale_t = clean_price(row[5]) if len(row) > 5 else "N/A"
         
         # Extract Dambulla wholesale prices (columns 6 and 8)
-        dambulla_wholesale_y = clean_price(row[6]) if len(row) > 6 else None
-        dambulla_wholesale_t = clean_price(row[8]) if len(row) > 8 else None
+        dambulla_wholesale_y = clean_price(row[6]) if len(row) > 6 else "N/A"
+        dambulla_wholesale_t = clean_price(row[8]) if len(row) > 8 else "N/A"
         
         # Extract Pettah retail prices (columns 9 and 10)
-        pettah_retail_y = clean_price(row[9]) if len(row) > 9 else None
-        pettah_retail_t = clean_price(row[10]) if len(row) > 10 else None
+        pettah_retail_y = clean_price(row[9]) if len(row) > 9 else "N/A"
+        pettah_retail_t = clean_price(row[10]) if len(row) > 10 else "N/A"
         
         # Extract Dambulla retail prices (columns 12 and 14)
-        dambulla_retail_y = clean_price(row[12]) if len(row) > 12 else None
-        dambulla_retail_t = clean_price(row[14]) if len(row) > 14 else None
+        dambulla_retail_y = clean_price(row[12]) if len(row) > 12 else "N/A"
+        dambulla_retail_t = clean_price(row[14]) if len(row) > 14 else "N/A"
         
         # Extract Narahenpita retail prices (columns 16 and 18)
-        narahenpita_retail_y = clean_price(row[16]) if len(row) > 16 else None
-        narahenpita_retail_t = clean_price(row[18]) if len(row) > 18 else None
+        narahenpita_retail_y = clean_price(row[16]) if len(row) > 16 else "N/A"
+        narahenpita_retail_t = clean_price(row[18]) if len(row) > 18 else "N/A"
         
         # Print extracted Narahenpita prices for debugging
         print(f"Extracted Narahenpita prices - Yesterday: {narahenpita_retail_y}, Today: {narahenpita_retail_t}")
@@ -163,97 +220,97 @@ def extract_prices(row):
                 
     except Exception as e:
         print(f"Error extracting prices: {str(e)}")
-        return None, None, None, None, None, None, None, None, None, None
+        return "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"
 
 def process_table_data(table):
-    """
-    Convert table data to a MongoDB-compatible format with proper column mapping
-    """
-    # Find header row
+    """Convert table data to a MongoDB-compatible format with proper column mapping"""
+    if not table:
+        return []
+
+    # Find the header row index
     header_row_idx = None
-    for i, row in enumerate(table):
-        if row and len(row) > 0 and row[0] == 'Item':
-            header_row_idx = i
-            print(f"Found header row at index {i}")
+    for idx, row in enumerate(table):
+        if row and any('WHOLESALE' in str(cell).upper() for cell in row):
+            header_row_idx = idx
             break
-    
+
     if header_row_idx is None:
         print("Could not find header row")
-        return None
-    
-    # Find vegetables section
+        return []
+
+    # Process vegetables section
     veg_start_idx, veg_end_idx = find_section_boundaries(table, header_row_idx)
-    if veg_start_idx is None:
-        print("Could not find VEGETABLES section")
-        return None
-    
-    print(f"\nProcessing vegetable rows from index {veg_start_idx} to {veg_end_idx}")
-    
-    # Process each row in the vegetables section
-    processed_rows = []
-    row_num = 0
-    
-    for i in range(veg_start_idx, veg_end_idx):
-        row = table[i]
-        if not row or len(row) < 2:  # Skip empty rows
-            print(f"Skipping row {row_num} due to insufficient data")
-            row_num += 1
-            continue
-            
-        item_name = row[0].strip() if row[0] else None
-        if not item_name:
-            print(f"Skipping row {row_num} due to invalid item name: {item_name}")
-            row_num += 1
-            continue
-            
-        unit = row[1].strip() if len(row) > 1 else None
-        
-        # Extract all prices using the new function
-        (pettah_wholesale_yesterday, pettah_wholesale_today,
-         dambulla_wholesale_yesterday, dambulla_wholesale_today,
-         pettah_retail_yesterday, pettah_retail_today,
-         dambulla_retail_yesterday, dambulla_retail_today,
-         narahenpita_retail_yesterday, narahenpita_retail_today) = extract_prices(row)
-        
-        print(f"\nProcessing item: {item_name}")
-        print(f"Unit: {unit}")
-        print(f"Pettah wholesale: {pettah_wholesale_yesterday} / {pettah_wholesale_today}")
-        print(f"Pettah retail: {pettah_retail_yesterday} / {pettah_retail_today}")
-        print(f"Dambulla wholesale: {dambulla_wholesale_yesterday} / {dambulla_wholesale_today}")
-        print(f"Dambulla retail: {dambulla_retail_yesterday} / {dambulla_retail_today}")
-        print(f"Narahenpita retail: {narahenpita_retail_yesterday} / {narahenpita_retail_today}")
-        
-        row_data = {
-            'item': item_name,
-            'unit': unit,
-            'pettah_wholesale': {
-                'yesterday': pettah_wholesale_yesterday,
-                'today': pettah_wholesale_today
-            },
-            'dambulla_wholesale': {
-                'yesterday': dambulla_wholesale_yesterday,
-                'today': dambulla_wholesale_today
-            },
-            'pettah_retail': {
-                'yesterday': pettah_retail_yesterday,
-                'today': pettah_retail_today
-            },
-            'dambulla_retail': {
-                'yesterday': dambulla_retail_yesterday,
-                'today': dambulla_retail_today
-            },
-            'narahenpita_retail': {
-                'yesterday': narahenpita_retail_yesterday,
-                'today': narahenpita_retail_today
-            }
-        }
-        
-        processed_rows.append(row_data)
-        print(f"Added row for item: {item_name}")
-        row_num += 1
-        
-    print(f"\nTotal rows processed: {len(processed_rows)}")
-    return processed_rows
+    if veg_start_idx is not None and veg_end_idx is not None:
+        vegetables_data = []
+        for row in table[veg_start_idx:veg_end_idx]:
+            if row and any(row):  # Skip empty rows
+                item_name = str(row[0]).strip() if row[0] else ""
+                if item_name and item_name.lower() != "item":
+                    prices = extract_prices(row)
+                    if any(prices):  # Only add if we have any price data
+                        vegetables_data.append({
+                            'type': 'vegetables',
+                            'item': item_name,
+                            'pettah_wholesale': {
+                                'yesterday': prices[0],
+                                'today': prices[1]
+                            },
+                            'dambulla_wholesale': {
+                                'yesterday': prices[2],
+                                'today': prices[3]
+                            },
+                            'pettah_retail': {
+                                'yesterday': prices[4],
+                                'today': prices[5]
+                            },
+                            'dambulla_retail': {
+                                'yesterday': prices[6],
+                                'today': prices[7]
+                            },
+                            'narahenpita_retail': {
+                                'yesterday': prices[8],
+                                'today': prices[9]
+                            },
+                            'timestamp': datetime.now()
+                        })
+
+    # Process other section
+    other_start_idx, other_end_idx = find_other_section_boundaries(table, header_row_idx)
+    if other_start_idx is not None and other_end_idx is not None:
+        other_data = []
+        for row in table[other_start_idx:other_end_idx]:
+            if row and any(row):  # Skip empty rows
+                item_name = str(row[0]).strip() if row[0] else ""
+                if item_name and item_name.lower() != "item":
+                    prices = extract_prices(row)
+                    if any(prices):  # Only add if we have any price data
+                        other_data.append({
+                            'type': 'other',
+                            'item': item_name,
+                            'pettah_wholesale': {
+                                'yesterday': prices[0],
+                                'today': prices[1]
+                            },
+                            'dambulla_wholesale': {
+                                'yesterday': prices[2],
+                                'today': prices[3]
+                            },
+                            'pettah_retail': {
+                                'yesterday': prices[4],
+                                'today': prices[5]
+                            },
+                            'dambulla_retail': {
+                                'yesterday': prices[6],
+                                'today': prices[7]
+                            },
+                            'narahenpita_retail': {
+                                'yesterday': prices[8],
+                                'today': prices[9]
+                            },
+                            'timestamp': datetime.now()
+                        })
+
+    return vegetables_data + other_data
 
 def extract_pdf_data(pdf_path):
     """
@@ -295,16 +352,34 @@ def extract_pdf_data(pdf_path):
             # Process the table data
             processed_data = process_table_data(table)
             
-            # Create document for MongoDB
-            document = {
-                'date': date_obj,
-                'type': 'vegetables',  # Add type field
-                'page': 2,
-                'table_index': 0,
-                'data': processed_data
-            }
+            # Split the data into vegetables and other sections
+            vegetables_data = [item for item in processed_data if item['type'] == 'vegetables']
+            other_data = [item for item in processed_data if item['type'] == 'other']
             
-            return [document]
+            # Create separate documents for vegetables and other sections
+            documents = []
+            
+            if vegetables_data:
+                vegetables_document = {
+                    'date': date_obj,
+                    'type': 'vegetables',
+                    'page': 2,
+                    'table_index': 0,
+                    'data': vegetables_data
+                }
+                documents.append(vegetables_document)
+                
+            if other_data:
+                other_document = {
+                    'date': date_obj,
+                    'type': 'other',
+                    'page': 2,
+                    'table_index': 1,  # Different table_index for other section
+                    'data': other_data
+                }
+                documents.append(other_document)
+            
+            return documents
             
     except Exception as e:
         print(f"Error extracting data from {pdf_path}: {str(e)}")
