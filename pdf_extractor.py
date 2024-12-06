@@ -147,6 +147,60 @@ def find_other_section_boundaries(table, header_row_idx):
     
     return start_idx, end_idx
 
+def find_fruits_section_boundaries(table, header_row_idx):
+    """Find the start and end indices for the Fruits section in the table"""
+    start_idx = None
+    end_idx = None
+    
+    # Search for the FRUITS section header
+    for i in range(header_row_idx, len(table)):
+        row = table[i]
+        if not row:
+            continue
+            
+        # Join the row elements to check for section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        if 'F R U I T S' in row_text:
+            start_idx = i + 2  # Skip the empty row after header
+            break
+    
+    if start_idx is None:
+        print("Could not find FRUITS section start")
+        return None, None
+        
+    # Search for the end of section (next section header or empty rows)
+    section_markers = ['R I C E', 'F I S H']
+    empty_row_count = 0
+    
+    for i in range(start_idx, len(table)):
+        row = table[i]
+        if not row or all(not cell for cell in row):
+            empty_row_count += 1
+            if empty_row_count >= 3:  # Three consecutive empty rows
+                end_idx = i - 2  # Go back to before empty rows
+                break
+        else:
+            empty_row_count = 0
+            
+        # Check for next section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        for marker in section_markers:
+            if marker in row_text:
+                end_idx = i
+                break
+                
+        if end_idx:
+            break
+            
+    # If no clear end found, use a default value
+    if not end_idx:
+        print("Could not find section end")
+        # Set end index to start + 20 rows or table length, whichever is smaller
+        end_idx = min(start_idx + 20, len(table))
+        print(f"Using default end index: {end_idx}")
+    
+    return start_idx, end_idx
+
 def clean_price(price_str):
     """
     Clean and convert price string to float.
@@ -238,17 +292,18 @@ def process_table_data(table):
         print("Could not find header row")
         return []
 
+    all_data = []
+
     # Process vegetables section
     veg_start_idx, veg_end_idx = find_section_boundaries(table, header_row_idx)
     if veg_start_idx is not None and veg_end_idx is not None:
-        vegetables_data = []
         for row in table[veg_start_idx:veg_end_idx]:
             if row and any(row):  # Skip empty rows
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     prices = extract_prices(row)
                     if any(prices):  # Only add if we have any price data
-                        vegetables_data.append({
+                        all_data.append({
                             'type': 'vegetables',
                             'item': item_name,
                             'pettah_wholesale': {
@@ -277,14 +332,13 @@ def process_table_data(table):
     # Process other section
     other_start_idx, other_end_idx = find_other_section_boundaries(table, header_row_idx)
     if other_start_idx is not None and other_end_idx is not None:
-        other_data = []
         for row in table[other_start_idx:other_end_idx]:
             if row and any(row):  # Skip empty rows
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     prices = extract_prices(row)
                     if any(prices):  # Only add if we have any price data
-                        other_data.append({
+                        all_data.append({
                             'type': 'other',
                             'item': item_name,
                             'pettah_wholesale': {
@@ -310,7 +364,42 @@ def process_table_data(table):
                             'timestamp': datetime.now()
                         })
 
-    return vegetables_data + other_data
+    # Process fruits section
+    fruits_start_idx, fruits_end_idx = find_fruits_section_boundaries(table, header_row_idx)
+    if fruits_start_idx is not None and fruits_end_idx is not None:
+        for row in table[fruits_start_idx:fruits_end_idx]:
+            if row and any(row):  # Skip empty rows
+                item_name = str(row[0]).strip() if row[0] else ""
+                if item_name and item_name.lower() != "item":
+                    prices = extract_prices(row)
+                    if any(prices):  # Only add if we have any price data
+                        all_data.append({
+                            'type': 'fruits',
+                            'item': item_name,
+                            'pettah_wholesale': {
+                                'yesterday': prices[0],
+                                'today': prices[1]
+                            },
+                            'dambulla_wholesale': {
+                                'yesterday': prices[2],
+                                'today': prices[3]
+                            },
+                            'pettah_retail': {
+                                'yesterday': prices[4],
+                                'today': prices[5]
+                            },
+                            'dambulla_retail': {
+                                'yesterday': prices[6],
+                                'today': prices[7]
+                            },
+                            'narahenpita_retail': {
+                                'yesterday': prices[8],
+                                'today': prices[9]
+                            },
+                            'timestamp': datetime.now()
+                        })
+
+    return all_data
 
 def extract_pdf_data(pdf_path):
     """
@@ -352,11 +441,12 @@ def extract_pdf_data(pdf_path):
             # Process the table data
             processed_data = process_table_data(table)
             
-            # Split the data into vegetables and other sections
+            # Split the data into different sections
             vegetables_data = [item for item in processed_data if item['type'] == 'vegetables']
             other_data = [item for item in processed_data if item['type'] == 'other']
+            fruits_data = [item for item in processed_data if item['type'] == 'fruits']
             
-            # Create separate documents for vegetables and other sections
+            # Create separate documents for each section
             documents = []
             
             if vegetables_data:
@@ -374,10 +464,20 @@ def extract_pdf_data(pdf_path):
                     'date': date_obj,
                     'type': 'other',
                     'page': 2,
-                    'table_index': 1,  # Different table_index for other section
+                    'table_index': 1,
                     'data': other_data
                 }
                 documents.append(other_document)
+                
+            if fruits_data:
+                fruits_document = {
+                    'date': date_obj,
+                    'type': 'fruits',
+                    'page': 2,
+                    'table_index': 2,
+                    'data': fruits_data
+                }
+                documents.append(fruits_document)
             
             return documents
             
