@@ -298,6 +298,7 @@ def extract_pdf_data(pdf_path):
             # Create document for MongoDB
             document = {
                 'date': date_obj,
+                'type': 'vegetables',  # Add type field
                 'page': 2,
                 'table_index': 0,
                 'data': processed_data
