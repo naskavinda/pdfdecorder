@@ -1,4 +1,8 @@
-Vegetable Price Report for 2024-12-05 00:00:00
+Price Report for 2024-12-05 00:00:00
+============================================================
+
+
+VEGETABLES
 ============================================================
 
 Wholesale Prices (Rs./kg):
@@ -29,5 +33,77 @@ Pumpkin                            180.00          135.00          220.00
 Snake gourd                        350.00          320.00          480.00
 Green Chilli                       700.00          705.00          900.00
 Lime                               400.00          255.00          800.00
+
+--------------------------------------------------------------------------------
+
+OTHER
+============================================================
+
+Wholesale Prices (Rs./kg):
+------------------------------------------------------------
+Item                               Pettah        Dambulla
+------------------------------------------------------------
+Red Onion (Local)                  250.00             N/A
+Red Onion (lmp)                    321.00          323.00
+Big Onion (Local)                  383.00          335.00
+Big Onion (Imp)                    246.00          268.00
+Potato (Local)                     325.00          290.00
+Potato (Imp)                       228.00             N/A
+Dried Chilli (Imp)                 725.00             N/A
+Coconut (Avg.)                     150.00             N/A
+Coconut oil                        693.00             N/A
+Red Dhal                           272.00             N/A
+Sugar (White)                      233.00             N/A
+Egg (White)                         38.00             N/A
+Katta (Imp)                      1,700.00            2.00
+Sprat (Imp)                        850.00            1.00
+
+
+Retail Prices (Rs./kg):
+------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Red Onion (Local)                     N/A             N/A             N/A
+Red Onion (lmp)                    420.00          343.00          480.00
+Big Onion (Local)                  400.00          355.00             N/A
+Big Onion (Imp)                    330.00          288.00          360.00
+Potato (Local)                     430.00          310.00          380.00
+Potato (Imp)                       250.00             N/A          280.00
+Dried Chilli (Imp)                 800.00             N/A          850.00
+Coconut (Avg.)                     190.00             N/A          195.00
+Coconut oil                        747.00             N/A          741.00
+Red Dhal                           290.00             N/A          300.00
+Sugar (White)                      245.00             N/A          260.00
+Egg (White)                         38.50             N/A           42.00
+Katta (Imp)                      1,000.00             N/A             N/A
+Sprat (Imp)                      1,000.00             N/A        1,200.00
+
+--------------------------------------------------------------------------------
+
+FRUITS
+============================================================
+
+Wholesale Prices (Rs./kg):
+------------------------------------------------------------
+Item                               Pettah        Dambulla
+------------------------------------------------------------
+Banana (Sour)                       70.00             N/A
+Papaw                              100.00           55.00
+Pineapple                             N/A          250.00
+Apple (Imp)                           N/A             N/A
+Orange (Imp)                          N/A             N/A
+
+
+Retail Prices (Rs./kg):
+------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Banana (Sour)                      120.00             N/A          160.00
+Papaw                              150.00           85.00          240.00
+Pineapple                          350.00          280.00          450.00
+Apple (Imp)                        200.00             N/A          230.00
+Orange (Imp)                       200.00             N/A          230.00
+
+--------------------------------------------------------------------------------
 
 Note: All prices are in Sri Lankan Rupees (Rs.)
