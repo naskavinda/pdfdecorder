@@ -55,8 +55,8 @@ Coconut oil                        693.00             N/A
 Red Dhal                           272.00             N/A
 Sugar (White)                      233.00             N/A
 Egg (White)                         38.00             N/A
-Katta (Imp)                      1,700.00            2.00
-Sprat (Imp)                        850.00            1.00
+Katta (Imp)                      1,700.00             N/A
+Sprat (Imp)                        850.00             N/A
 
 
 Retail Prices (Rs./kg):
@@ -74,8 +74,8 @@ Coconut (Avg.)                     190.00             N/A          195.00
 Coconut oil                        747.00             N/A          741.00
 Red Dhal                           290.00             N/A          300.00
 Sugar (White)                      245.00             N/A          260.00
-Egg (White)                         38.50             N/A           42.00
-Katta (Imp)                      1,000.00             N/A             N/A
+Egg (White)                           N/A             N/A           42.00
+Katta (Imp)                      2,000.00             N/A             N/A
 Sprat (Imp)                      1,000.00             N/A        1,200.00
 
 --------------------------------------------------------------------------------

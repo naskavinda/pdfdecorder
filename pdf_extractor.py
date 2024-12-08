@@ -201,25 +201,32 @@ def find_fruits_section_boundaries(table, header_row_idx):
     
     return start_idx, end_idx
 
-def clean_price(price_str):
+def clean_price(row, index):
     """
     Clean and convert price string to float.
     Returns "N/A" for null or invalid values.
     """
+    price_str = row[index]
     try:
         if not price_str or pd.isna(price_str) or price_str == 'n.a.':
             return "N/A"
             
         # Remove spaces
-        price_str = price_str.replace(' ', '')
+        if '.00' in price_str:
+            price_str = price_str.split('.00')[0].replace(' ', '')
+        else:
+            price_str = 'N/A'
         
         # If the price starts with a comma, add a leading digit
-        if price_str.startswith(','):
-            price_str = '1' + price_str
-            
+        if price_str.startswith(',') and index > 1:
+            if '.00' in row[index - 1]:
+                price_str = row[index - 1].split('.00')[1] + price_str
+            else:
+                price_str = row[index - 1] + price_str
         # Now convert to float, after removing the comma
         float_value = float(price_str.replace(',', ''))
-        return str(float_value) if float_value else "N/A"
+        returnValue = str(float_value) if float_value else "N/A"
+        return returnValue
     except Exception as e:
         print(f"Error cleaning price {price_str}: {str(e)}")
         return "N/A"
@@ -244,24 +251,24 @@ def extract_prices(row):
             print(f"Narahenpita today (index 18): {row[18]}")
             
         # Extract Pettah wholesale prices (columns 3 and 5)
-        pettah_wholesale_y = clean_price(row[3]) if len(row) > 3 else "N/A"
-        pettah_wholesale_t = clean_price(row[5]) if len(row) > 5 else "N/A"
+        pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"
+        pettah_wholesale_t = clean_price(row, 5) if len(row) > 5 else "N/A"
         
         # Extract Dambulla wholesale prices (columns 6 and 8)
-        dambulla_wholesale_y = clean_price(row[6]) if len(row) > 6 else "N/A"
-        dambulla_wholesale_t = clean_price(row[8]) if len(row) > 8 else "N/A"
+        dambulla_wholesale_y = clean_price(row, 6) if len(row) > 6 else "N/A"
+        dambulla_wholesale_t = clean_price(row, 8) if len(row) > 8 else "N/A"
         
         # Extract Pettah retail prices (columns 9 and 10)
-        pettah_retail_y = clean_price(row[9]) if len(row) > 9 else "N/A"
-        pettah_retail_t = clean_price(row[10]) if len(row) > 10 else "N/A"
+        pettah_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"
+        pettah_retail_t = clean_price(row, 10) if len(row) > 10 else "N/A"
         
         # Extract Dambulla retail prices (columns 12 and 14)
-        dambulla_retail_y = clean_price(row[12]) if len(row) > 12 else "N/A"
-        dambulla_retail_t = clean_price(row[14]) if len(row) > 14 else "N/A"
+        dambulla_retail_y = clean_price(row, 12) if len(row) > 12 else "N/A"
+        dambulla_retail_t = clean_price(row, 14) if len(row) > 14 else "N/A"
         
         # Extract Narahenpita retail prices (columns 16 and 18)
-        narahenpita_retail_y = clean_price(row[16]) if len(row) > 16 else "N/A"
-        narahenpita_retail_t = clean_price(row[18]) if len(row) > 18 else "N/A"
+        narahenpita_retail_y = clean_price(row, 16) if len(row) > 16 else "N/A"
+        narahenpita_retail_t = clean_price(row, 18) if len(row) > 18 else "N/A"
         
         # Print extracted Narahenpita prices for debugging
         print(f"Extracted Narahenpita prices - Yesterday: {narahenpita_retail_y}, Today: {narahenpita_retail_t}")
