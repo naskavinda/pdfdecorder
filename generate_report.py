@@ -58,22 +58,31 @@ def generate_single_report(doc, report_file):
                 f.write(f"\n{item_type.upper()}\n")
                 f.write("=" * 60 + "\n\n")
                 
+                # Check if it's rice data
+                is_rice = item_type == 'rice'
+                
                 # Write wholesale prices
                 f.write("Wholesale Prices (Rs./kg):\n")
-                f.write("-" * 60 + "\n")
-                f.write(f"{'Item':<25} {'Pettah':>15} {'Dambulla':>15}\n")
-                f.write("-" * 60 + "\n")
+                f.write("-" * 80 + "\n")
+                if is_rice:
+                    f.write(f"{'Item':<25} {'Pettah':>15} {'Marandagahamula':>20}\n")
+                else:
+                    f.write(f"{'Item':<25} {'Pettah':>15} {'Dambulla':>15}\n")
+                f.write("-" * 80 + "\n")
                 
                 for row in items:
                     item = row['item']
                     pettah_wholesale = format_price(row['pettah_wholesale']['today'])
-                    dambulla_wholesale = format_price(row['dambulla_wholesale']['today'])
-                    
-                    f.write(f"{item:<25} {pettah_wholesale:>15} {dambulla_wholesale:>15}\n")
+                    if is_rice:
+                        marandagahamula_wholesale = format_price(row['marandagahamula_wholesale']['today'])
+                        f.write(f"{item:<25} {pettah_wholesale:>15} {marandagahamula_wholesale:>20}\n")
+                    else:
+                        dambulla_wholesale = format_price(row['dambulla_wholesale']['today'])
+                        f.write(f"{item:<25} {pettah_wholesale:>15} {dambulla_wholesale:>15}\n")
                 
                 # Write retail prices
                 f.write("\n\nRetail Prices (Rs./kg):\n")
-                f.write("-" * 60 + "\n")
+                f.write("-" * 80 + "\n")
                 f.write(f"{'Item':<25} {'Pettah':>15} {'Dambulla':>15} {'Narahenpita':>15}\n")
                 f.write("-" * 80 + "\n")
                 
@@ -137,8 +146,14 @@ def display_todays_prices(data):
         for item in items:
             # Pettah prices
             print(f"{item['item']:<15} {'Pettah':<15} {format_price(item['pettah_wholesale']['today']):<15} {format_price(item['pettah_retail']['today']):<15}")
-            # Dambulla prices
-            print(f"{'':<15} {'Dambulla':<15} {format_price(item['dambulla_wholesale']['today']):<15} {format_price(item['dambulla_retail']['today']):<15}")
+            
+            # Check if it's rice data (using marandagahamula) or other data (using dambulla)
+            if 'marandagahamula_wholesale' in item:
+                print(f"{'':<15} {'Marandagahamula':<15} {format_price(item['marandagahamula_wholesale']['today']):<15} {'N/A':<15}")
+                print(f"{'':<15} {'Dambulla':<15} {'N/A':<15} {format_price(item['dambulla_retail']['today']):<15}")
+            else:
+                print(f"{'':<15} {'Dambulla':<15} {format_price(item['dambulla_wholesale']['today']):<15} {format_price(item['dambulla_retail']['today']):<15}")
+            
             # Narahenpita retail only
             print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(item['narahenpita_retail']['today']):<15}")
             print("-" * 80)

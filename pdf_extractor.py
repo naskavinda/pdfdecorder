@@ -201,6 +201,60 @@ def find_fruits_section_boundaries(table, header_row_idx):
     
     return start_idx, end_idx
 
+def find_rice_section_boundaries(table, header_row_idx):
+    """Find the start and end indices for the Rice section in the table"""
+    start_idx = None
+    end_idx = None
+    
+    # Search for the RICE section header
+    for i in range(header_row_idx, len(table)):
+        row = table[i]
+        if not row:
+            continue
+            
+        # Join the row elements to check for section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        if 'R I C E' in row_text:
+            start_idx = i + 4  # Skip the empty row after header
+            break
+    
+    if start_idx is None:
+        print("Could not find RICE section start")
+        return None, None
+        
+    # Search for the end of section (next section header or empty rows)
+    section_markers = ['F I S H']
+    empty_row_count = 0
+    
+    for i in range(start_idx, len(table)):
+        row = table[i]
+        if not row or all(not cell for cell in row):
+            empty_row_count += 1
+            if empty_row_count >= 3:  # Three consecutive empty rows
+                end_idx = i - 2  # Go back to before empty rows
+                break
+        else:
+            empty_row_count = 0
+            
+        # Check for next section header
+        row_text = ' '.join(str(cell) for cell in row if cell)
+        for marker in section_markers:
+            if marker in row_text:
+                end_idx = i
+                break
+                
+        if end_idx:
+            break
+            
+    # If no clear end found, use a default value
+    if not end_idx:
+        print("Could not find section end")
+        # Set end index to start + 20 rows or table length, whichever is smaller
+        end_idx = min(start_idx + 20, len(table))
+        print(f"Using default end index: {end_idx}")
+    
+    return start_idx, end_idx
+
 def clean_price(row, index):
     """
     Clean and convert price string to float.
@@ -406,6 +460,42 @@ def process_table_data(table):
                             'timestamp': datetime.now()
                         })
 
+    # Process rice section
+    rice_start_idx, rice_end_idx = find_rice_section_boundaries(table, header_row_idx)
+    if rice_start_idx is not None and rice_end_idx is not None:
+        for row in table[rice_start_idx:rice_end_idx]:
+            if row and any(row):  # Skip empty rows
+                item_name = str(row[0]).strip() if row[0] else ""
+                if item_name and item_name.lower() != "item":
+                    prices = extract_prices(row)
+                    if any(prices):  # Only add if we have any price data
+                        all_data.append({
+                            'type': 'rice',
+                            'item': item_name,
+                            'pettah_wholesale': {
+                                'yesterday': prices[0],
+                                'today': prices[1]
+                            },
+                            'marandagahamula_wholesale': {
+                                'yesterday': prices[2],
+                                'today': prices[3]
+                            },
+                            'pettah_retail': {
+                                'yesterday': prices[4],
+                                'today': prices[5]
+                            },
+                            'dambulla_retail': {
+                                'yesterday': prices[6],
+                                'today': prices[7]
+                            },
+                            'narahenpita_retail': {
+                                'yesterday': prices[8],
+                                'today': prices[9]
+                            },
+                            'timestamp': datetime.now()
+                        })
+
+
     return all_data
 
 def extract_pdf_data(pdf_path):
@@ -452,6 +542,7 @@ def extract_pdf_data(pdf_path):
             vegetables_data = [item for item in processed_data if item['type'] == 'vegetables']
             other_data = [item for item in processed_data if item['type'] == 'other']
             fruits_data = [item for item in processed_data if item['type'] == 'fruits']
+            rice_data = [item for item in processed_data if item['type'] == 'rice']
             
             # Create separate documents for each section
             documents = []
@@ -485,6 +576,16 @@ def extract_pdf_data(pdf_path):
                     'data': fruits_data
                 }
                 documents.append(fruits_document)
+                
+            if rice_data:
+                rice_document = {
+                    'date': date_obj,
+                    'type': 'rice',
+                    'page': 2,
+                    'table_index': 3,
+                    'data': rice_data
+                }
+                documents.append(rice_document)
             
             return documents
             
