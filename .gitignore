@@ -39,16 +39,20 @@ data/*
 data/processed/*
 !data/processed/2024-12-05.pdf
 !data/processed/2024-12-04.pdf
+!data/processed/2024-12-03.pdf
+!data/processed/2024-12-09.pdf
 
 reports/*
 !reports/price_report_2024-12-04.txt
 !reports/price_report_2024-12-03.txt
 !reports/price_report_2024-12-05.txt
+!reports/price_report_2024-12-09.txt
 
 *.pdf
 !data/processed/2024-12-05.pdf
 !data/processed/2024-12-04.pdf
 !data/processed/2024-12-03.pdf
+!data/processed/2024-12-09.pdf
 *.csv
 *.xlsx
 
