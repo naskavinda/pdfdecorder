@@ -34,83 +34,81 @@ def format_change(change):
         return ''
 
 def save_to_mongodb(doc):
-    """Save data to MongoDB in item-specific collections"""
+    """Save data to MongoDB in item-specific collections with dates as keys"""
     if 'data' in doc:
         date = doc.get('date')
+        # Convert date to YYYYMMDD format for the key
+        date_key = date.strftime('%Y%m%d') if isinstance(date, datetime) else date.replace('-', '')
+        
         # Group items by type
         items_by_type = {}
         for item in doc['data']:
             item_type = item['type']
-            
-            try:
-                # Extract only today's prices
-                today_data = {
-                    'item': item['item'],
-                    'type': item['type']
-                }
-                
-                # Add wholesale and retail prices based on type
-                if item_type == 'fish':
-                    today_data.update({
-                        'wholesale': {
-                            'peliyagoda': item.get('peliyagoda_wholesale', {}).get('today'),
-                            'negombo': item.get('negombo_wholesale', {}).get('today')
-                        },
-                        'retail': {
-                            'pettah': item.get('pettah_retail', {}).get('today'),
-                            'negombo': item.get('negombo_retail', {}).get('today'),
-                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
-                        }
-                    })
-                elif item_type == 'rice':
-                    today_data.update({
-                        'wholesale': {
-                            'pettah': item.get('pettah_wholesale', {}).get('today'),
-                            'marandagahamula': item.get('marandagahamula_wholesale', {}).get('today')
-                        },
-                        'retail': {
-                            'pettah': item.get('pettah_retail', {}).get('today'),
-                            'dambulla': item.get('dambulla_retail', {}).get('today'),
-                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
-                        }
-                    })
-                else:
-                    today_data.update({
-                        'wholesale': {
-                            'pettah': item.get('pettah_wholesale', {}).get('today'),
-                            'dambulla': item.get('dambulla_wholesale', {}).get('today')
-                        },
-                        'retail': {
-                            'pettah': item.get('pettah_retail', {}).get('today'),
-                            'dambulla': item.get('dambulla_retail', {}).get('today'),
-                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
-                        }
-                    })
-                
-                if item_type not in items_by_type:
-                    items_by_type[item_type] = []
-                items_by_type[item_type].append(today_data)
-            except KeyError as e:
-                print(f"Warning: Missing data for item {item['item']}: {str(e)}")
-                continue
+            if item_type not in items_by_type:
+                items_by_type[item_type] = []
+            items_by_type[item_type].append(item)
         
         # Save each type to its own collection
         for item_type, items in items_by_type.items():
             collection_name = f"{item_type}_prices"
             collection = db[collection_name]
             
-            # Create data document with only today's prices
-            data_doc = {
-                "date": date,
-                "items": items
-            }
-            
-            # Insert or update data for this date
-            collection.update_one(
-                {"date": date},
-                {"$set": data_doc},
-                upsert=True
-            )
+            # Process each item
+            for item_data in items:
+                # Create the price data structure
+                price_data = {
+                    'date': date,
+                    'wholesale': {},
+                    'retail': {}
+                }
+                
+                # Add wholesale prices based on item type
+                if item_type == 'fish':
+                    price_data['wholesale'].update({
+                        'peliyagoda': item_data.get('peliyagoda_wholesale', {}).get('today'),
+                        'negombo': item_data.get('negombo_wholesale', {}).get('today')
+                    })
+                    price_data['retail'].update({
+                        'pettah': item_data.get('pettah_retail', {}).get('today'),
+                        'negombo': item_data.get('negombo_retail', {}).get('today'),
+                        'narahenpita': item_data.get('narahenpita_retail', {}).get('today')
+                    })
+                elif item_type == 'rice':
+                    price_data['wholesale'].update({
+                        'pettah': item_data.get('pettah_wholesale', {}).get('today'),
+                        'marandagahamula': item_data.get('marandagahamula_wholesale', {}).get('today')
+                    })
+                    price_data['retail'].update({
+                        'pettah': item_data.get('pettah_retail', {}).get('today'),
+                        'dambulla': item_data.get('dambulla_retail', {}).get('today'),
+                        'narahenpita': item_data.get('narahenpita_retail', {}).get('today')
+                    })
+                else:
+                    price_data['wholesale'].update({
+                        'pettah': item_data.get('pettah_wholesale', {}).get('today'),
+                        'dambulla': item_data.get('dambulla_wholesale', {}).get('today')
+                    })
+                    price_data['retail'].update({
+                        'pettah': item_data.get('pettah_retail', {}).get('today'),
+                        'dambulla': item_data.get('dambulla_retail', {}).get('today'),
+                        'narahenpita': item_data.get('narahenpita_retail', {}).get('today')
+                    })
+                
+                # Update the document for this item
+                update_data = {
+                    '$set': {
+                        'item': item_data['item'],
+                        'type': item_data['type'],
+                        date_key: price_data
+                    }
+                }
+                
+                # Insert or update using item name as the identifier
+                collection.update_one(
+                    {'item': item_data['item']},
+                    update_data,
+                    upsert=True
+                )
 
 def generate_single_report(doc, report_file):
     """Generate a report for a single day and save to MongoDB"""

@@ -143,13 +143,13 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                           Peliyagoda         Negombo
 --------------------------------------------------------------------------------
-Kelawalla                        1,400.00             N/A
-Thalapath                        1,750.00             N/A
+Kelawalla                        1,400.00          950.00
+Thalapath                        1,750.00        1,600.00
 Balaya                             850.00             N/A
 Paraw                                 N/A             N/A
-Salaya                             400.00             N/A
+Salaya                             400.00          380.00
 Hurulla                               N/A             N/A
-Linna                                 N/A             N/A
+Linna                                 N/A          880.00
 
 
 Retail Prices (Rs./kg):

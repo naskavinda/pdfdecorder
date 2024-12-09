@@ -558,7 +558,7 @@ def process_table_data(table):
                                 'yesterday': prices[0],
                                 'today': prices[1]
                             },
-                            'nugombo_wholesale': {
+                            'negombo_wholesale': {
                                 'yesterday': prices[2],
                                 'today': prices[3]
                             },
