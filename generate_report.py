@@ -5,7 +5,6 @@ import os
 # MongoDB connection
 client = MongoClient('mongodb://root:secret@localhost:27017/')
 db = client['pdf_data']
-collection = db['extracted_tables']
 
 def format_price(price):
     """Format price to proper format"""
@@ -34,8 +33,90 @@ def format_change(change):
     except (ValueError, TypeError):
         return ''
 
+def save_to_mongodb(doc):
+    """Save data to MongoDB in item-specific collections"""
+    if 'data' in doc:
+        date = doc.get('date')
+        # Group items by type
+        items_by_type = {}
+        for item in doc['data']:
+            item_type = item['type']
+            
+            try:
+                # Extract only today's prices
+                today_data = {
+                    'item': item['item'],
+                    'type': item['type']
+                }
+                
+                # Add wholesale and retail prices based on type
+                if item_type == 'fish':
+                    today_data.update({
+                        'wholesale': {
+                            'peliyagoda': item.get('peliyagoda_wholesale', {}).get('today'),
+                            'negombo': item.get('negombo_wholesale', {}).get('today')
+                        },
+                        'retail': {
+                            'pettah': item.get('pettah_retail', {}).get('today'),
+                            'negombo': item.get('negombo_retail', {}).get('today'),
+                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
+                        }
+                    })
+                elif item_type == 'rice':
+                    today_data.update({
+                        'wholesale': {
+                            'pettah': item.get('pettah_wholesale', {}).get('today'),
+                            'marandagahamula': item.get('marandagahamula_wholesale', {}).get('today')
+                        },
+                        'retail': {
+                            'pettah': item.get('pettah_retail', {}).get('today'),
+                            'dambulla': item.get('dambulla_retail', {}).get('today'),
+                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
+                        }
+                    })
+                else:
+                    today_data.update({
+                        'wholesale': {
+                            'pettah': item.get('pettah_wholesale', {}).get('today'),
+                            'dambulla': item.get('dambulla_wholesale', {}).get('today')
+                        },
+                        'retail': {
+                            'pettah': item.get('pettah_retail', {}).get('today'),
+                            'dambulla': item.get('dambulla_retail', {}).get('today'),
+                            'narahenpita': item.get('narahenpita_retail', {}).get('today')
+                        }
+                    })
+                
+                if item_type not in items_by_type:
+                    items_by_type[item_type] = []
+                items_by_type[item_type].append(today_data)
+            except KeyError as e:
+                print(f"Warning: Missing data for item {item['item']}: {str(e)}")
+                continue
+        
+        # Save each type to its own collection
+        for item_type, items in items_by_type.items():
+            collection_name = f"{item_type}_prices"
+            collection = db[collection_name]
+            
+            # Create data document with only today's prices
+            data_doc = {
+                "date": date,
+                "items": items
+            }
+            
+            # Insert or update data for this date
+            collection.update_one(
+                {"date": date},
+                {"$set": data_doc},
+                upsert=True
+            )
+
 def generate_single_report(doc, report_file):
-    """Generate a report for a single day"""
+    """Generate a report for a single day and save to MongoDB"""
+    # Save to MongoDB first
+    save_to_mongodb(doc)
+    
     with open(report_file, 'w') as f:
         report_date = doc.get('date', 'Unknown Date')
         
@@ -76,16 +157,16 @@ def generate_single_report(doc, report_file):
                 for row in items:
                     item = row['item']
                     if is_fish:
-                        peliyagoda_wholesale = format_price(row['peliyagoda_wholesale']['today'])
-                        nugombo_wholesale = format_price(row['nugombo_wholesale']['today'])
-                        f.write(f"{item:<25} {peliyagoda_wholesale:>15} {nugombo_wholesale:>15}\n")
+                        peliyagoda_wholesale = format_price(row.get('peliyagoda_wholesale', {}).get('today'))
+                        negombo_wholesale = format_price(row.get('negombo_wholesale', {}).get('today'))
+                        f.write(f"{item:<25} {peliyagoda_wholesale:>15} {negombo_wholesale:>15}\n")
                     elif is_rice:
-                        pettah_wholesale = format_price(row['pettah_wholesale']['today'])
-                        marandagahamula_wholesale = format_price(row['marandagahamula_wholesale']['today'])
+                        pettah_wholesale = format_price(row.get('pettah_wholesale', {}).get('today'))
+                        marandagahamula_wholesale = format_price(row.get('marandagahamula_wholesale', {}).get('today'))
                         f.write(f"{item:<25} {pettah_wholesale:>15} {marandagahamula_wholesale:>20}\n")
                     else:
-                        pettah_wholesale = format_price(row['pettah_wholesale']['today'])
-                        dambulla_wholesale = format_price(row['dambulla_wholesale']['today'])
+                        pettah_wholesale = format_price(row.get('pettah_wholesale', {}).get('today'))
+                        dambulla_wholesale = format_price(row.get('dambulla_wholesale', {}).get('today'))
                         f.write(f"{item:<25} {pettah_wholesale:>15} {dambulla_wholesale:>15}\n")
                 
                 # Write retail prices
@@ -100,14 +181,14 @@ def generate_single_report(doc, report_file):
                 for row in items:
                     item = row['item']
                     if is_fish:
-                        pettah_retail = format_price(row['pettah_retail']['today'])
-                        negombo_retail = format_price(row['negombo_retail']['today'])
-                        narahenpita_retail = format_price(row['narahenpita_retail']['today'])
+                        pettah_retail = format_price(row.get('pettah_retail', {}).get('today'))
+                        negombo_retail = format_price(row.get('negombo_retail', {}).get('today'))
+                        narahenpita_retail = format_price(row.get('narahenpita_retail', {}).get('today'))
                         f.write(f"{item:<25} {pettah_retail:>15} {negombo_retail:>15} {narahenpita_retail:>15}\n")
                     else:
-                        pettah_retail = format_price(row['pettah_retail']['today'])
-                        dambulla_retail = format_price(row['dambulla_retail']['today'])
-                        narahenpita_retail = format_price(row['narahenpita_retail']['today'])
+                        pettah_retail = format_price(row.get('pettah_retail', {}).get('today'))
+                        dambulla_retail = format_price(row.get('dambulla_retail', {}).get('today'))
+                        narahenpita_retail = format_price(row.get('narahenpita_retail', {}).get('today'))
                         f.write(f"{item:<25} {pettah_retail:>15} {dambulla_retail:>15} {narahenpita_retail:>15}\n")
                 
                 f.write("\n" + "-" * 80 + "\n")
@@ -123,7 +204,7 @@ def generate_report():
     
     # Group documents by date
     documents_by_date = {}
-    for doc in collection.find():
+    for doc in db['extracted_tables'].find():
         date = doc.get('date')
         if date not in documents_by_date:
             documents_by_date[date] = {
@@ -144,48 +225,82 @@ def generate_report():
 
 def display_todays_prices(data):
     """Display today's wholesale and retail prices for all cities, categorized by type"""
-    # Group items by type
-    items_by_type = {}
-    for item in data:
-        item_type = item['type']
-        if item_type not in items_by_type:
-            items_by_type[item_type] = []
-        items_by_type[item_type].append(item)
-    
-    for item_type, items in items_by_type.items():
-        print(f"\n{item_type.upper()} - Today's Prices Report")
-        print("=" * 80)
-        print(f"{'Item':<15} {'Location':<15} {'Wholesale':<15} {'Retail':<15}")
-        print("-" * 80)
-        
-        for item in items:
-            # Check if it's fish data
-            is_fish = item_type == 'fish'
-            
-            if is_fish:
-                # Print Peliyagoda prices
-                print(f"{item['item']:<15} {'Peliyagoda':<15} {format_price(item['peliyagoda_wholesale']['today']):<15} {'N/A':<15}")
-                # Print Negombo prices
-                print(f"{'':<15} {'Negombo':<15} {format_price(item['nugombo_wholesale']['today']):<15} {format_price(item['negombo_retail']['today']):<15}")
-                # Print Narahenpita retail only
-                print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(item['narahenpita_retail']['today']):<15}")
-            else:
-                # Print Pettah prices
-                print(f"{item['item']:<15} {'Pettah':<15} {format_price(item['pettah_wholesale']['today']):<15} {format_price(item['pettah_retail']['today']):<15}")
-                # Check if rice (using marandagahamula) or other (using dambulla)
-                if 'marandagahamula_wholesale' in item:
-                    print(f"{'':<15} {'Marandagahamula':<15} {format_price(item['marandagahamula_wholesale']['today']):<15} {'N/A':<15}")
-                    print(f"{'':<15} {'Dambulla':<15} {'N/A':<15} {format_price(item['dambulla_retail']['today']):<15}")
+    if not data:
+        print("No data available")
+        return
+
+    for doc in data:
+        if 'data' not in doc:
+            continue
+
+        print(f"\nPrices for {doc['date']}")
+        print("=" * 60)
+
+        # Group items by type
+        items_by_type = {}
+        for item in doc['data']:
+            item_type = item['type']
+            if item_type not in items_by_type:
+                items_by_type[item_type] = []
+            items_by_type[item_type].append(item)
+
+        # Display prices for each type
+        for item_type, items in items_by_type.items():
+            print(f"\n{item_type.upper()}")
+            print("-" * 60)
+            print(f"{'Item':<15} {'Location':<15} {'Wholesale':<15} {'Retail':<15}")
+            print("-" * 60)
+
+            for item in items:
+                if item_type == 'fish':
+                    # Print Peliyagoda prices
+                    wholesale_price = item.get('peliyagoda_wholesale', {}).get('today')
+                    print(f"{item['item']:<15} {'Peliyagoda':<15} {format_price(wholesale_price):<15} {'N/A':<15}")
+                    
+                    # Print Negombo prices
+                    wholesale_price = item.get('negombo_wholesale', {}).get('today')
+                    retail_price = item.get('negombo_retail', {}).get('today')
+                    print(f"{'':<15} {'Negombo':<15} {format_price(wholesale_price):<15} {format_price(retail_price):<15}")
+                    
+                    # Print Narahenpita retail only
+                    retail_price = item.get('narahenpita_retail', {}).get('today')
+                    print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(retail_price):<15}")
+                
+                elif item_type == 'rice':
+                    # Print Pettah prices
+                    wholesale_price = item.get('pettah_wholesale', {}).get('today')
+                    retail_price = item.get('pettah_retail', {}).get('today')
+                    print(f"{item['item']:<15} {'Pettah':<15} {format_price(wholesale_price):<15} {format_price(retail_price):<15}")
+                    
+                    # Print Marandagahamula wholesale only
+                    wholesale_price = item.get('marandagahamula_wholesale', {}).get('today')
+                    print(f"{'':<15} {'Marandagah.':<15} {format_price(wholesale_price):<15} {'N/A':<15}")
+                    
+                    # Print Narahenpita retail only
+                    retail_price = item.get('narahenpita_retail', {}).get('today')
+                    print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(retail_price):<15}")
+                
                 else:
-                    print(f"{'':<15} {'Dambulla':<15} {format_price(item['dambulla_wholesale']['today']):<15} {format_price(item['dambulla_retail']['today']):<15}")
-                # Print Narahenpita retail only
-                print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(item['narahenpita_retail']['today']):<15}")
-            print("-" * 80)
+                    # Print Pettah prices
+                    wholesale_price = item.get('pettah_wholesale', {}).get('today')
+                    retail_price = item.get('pettah_retail', {}).get('today')
+                    print(f"{item['item']:<15} {'Pettah':<15} {format_price(wholesale_price):<15} {format_price(retail_price):<15}")
+                    
+                    # Print Dambulla prices
+                    wholesale_price = item.get('dambulla_wholesale', {}).get('today')
+                    retail_price = item.get('dambulla_retail', {}).get('today')
+                    print(f"{'':<15} {'Dambulla':<15} {format_price(wholesale_price):<15} {format_price(retail_price):<15}")
+                    
+                    # Print Narahenpita retail only
+                    retail_price = item.get('narahenpita_retail', {}).get('today')
+                    print(f"{'':<15} {'Narahenpita':<15} {'N/A':<15} {format_price(retail_price):<15}")
+                
+                print("-" * 60)
 
 if __name__ == '__main__':
     # Get all documents from the most recent date
-    latest_date = collection.find_one({}, sort=[("date", -1)])['date']
-    latest_docs = collection.find({"date": latest_date})
+    latest_date = db['extracted_tables'].find_one({}, sort=[("date", -1)])['date']
+    latest_docs = db['extracted_tables'].find({"date": latest_date})
     
     print(f"Found data for date: {latest_date}")
     
@@ -207,7 +322,7 @@ if __name__ == '__main__':
     print(f"Found item types: {types}")
     
     if all_data:
-        display_todays_prices(all_data)
+        display_todays_prices([{'date': latest_date, 'data': all_data}])
     else:
         print("No data found")
     generate_report()
