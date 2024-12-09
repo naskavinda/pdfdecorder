@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+.env
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Project specific
+data/*
+!data/processed/
+data/processed/*
+!data/processed/2024-12-05.pdf
+!data/processed/2024-12-04.pdf
+
+reports/*
+!reports/price_report_2024-12-04.txt
+!reports/price_report_2024-12-03.txt
+!reports/price_report_2024-12-05.txt
+
+*.pdf
+!data/processed/2024-12-05.pdf
+!data/processed/2024-12-04.pdf
+!data/processed/2024-12-03.pdf
+*.csv
+*.xlsx
+
+# MongoDB
+*.mongodb
+mongod.log
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local

@@ -686,13 +686,14 @@ def extract_pdf_data(pdf_path):
         return None
 
 def main():
-    # Create reports directory if it doesn't exist
+    # Create necessary directories if they don't exist
     os.makedirs('reports', exist_ok=True)
+    os.makedirs('data/processed', exist_ok=True)
     
     # Process all PDF files in the data directory
     pdf_dir = 'data'
     for filename in os.listdir(pdf_dir):
-        if filename.endswith('.pdf'):
+        if filename.endswith('.pdf') and os.path.isfile(os.path.join(pdf_dir, filename)):
             # Extract data from PDF
             pdf_path = os.path.join(pdf_dir, filename)
             extracted_data = extract_pdf_data(pdf_path)
@@ -712,8 +713,12 @@ def main():
                         {'$set': document},
                         upsert=True
                     )
-                    
+                
+                # Move the processed file to the processed folder
+                processed_path = os.path.join(pdf_dir, 'processed', filename)
+                os.rename(pdf_path, processed_path)
                 print(f"Successfully processed and stored data from {filename}")
+                print(f"Moved {filename} to processed folder")
             else:
                 print(f"Failed to process {filename}")
 
