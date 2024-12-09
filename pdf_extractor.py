@@ -6,8 +6,8 @@ from datetime import datetime
 
 # MongoDB connection
 client = MongoClient('mongodb://root:secret@localhost:27017/')
-db = client['pdf_data']
-collection = db['extracted_tables']
+db = client['central_bank']
+collection = db['row_data']
 
 def safe_get_price(cell):
     """Safely get price from cell"""

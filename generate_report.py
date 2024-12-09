@@ -4,7 +4,7 @@ import os
 
 # MongoDB connection
 client = MongoClient('mongodb://root:secret@localhost:27017/')
-db = client['pdf_data']
+db = client['central_bank']
 
 def format_price(price):
     """Format price to proper format"""
@@ -202,7 +202,7 @@ def generate_report():
     
     # Group documents by date
     documents_by_date = {}
-    for doc in db['extracted_tables'].find():
+    for doc in db['row_data'].find():
         date = doc.get('date')
         if date not in documents_by_date:
             documents_by_date[date] = {
@@ -297,8 +297,8 @@ def display_todays_prices(data):
 
 if __name__ == '__main__':
     # Get all documents from the most recent date
-    latest_date = db['extracted_tables'].find_one({}, sort=[("date", -1)])['date']
-    latest_docs = db['extracted_tables'].find({"date": latest_date})
+    latest_date = db['row_data'].find_one({}, sort=[("date", -1)])['date']
+    latest_docs = db['row_data'].find({"date": latest_date})
     
     print(f"Found data for date: {latest_date}")
     
