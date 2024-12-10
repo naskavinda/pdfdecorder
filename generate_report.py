@@ -115,7 +115,7 @@ def generate_single_report(doc, report_file):
     # Save to MongoDB first
     save_to_mongodb(doc)
     
-    with open(report_file, 'w') as f:
+    with open(report_file, 'w', encoding='utf-8') as f:
         report_date = doc.get('date', 'Unknown Date')
         
         # Write header
