@@ -380,6 +380,34 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
                 print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            if len(row) == 14:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 2) if len(row) > 2 else "N/A"  # Last Friday
+                pettah_wholesale_t = clean_price(row, 3) if len(row) > 3 else "N/A"  # Today
+                dambulla_wholesale_y = clean_price(row, 4) if len(row) > 4 else "N/A"  # Last Friday
+                dambulla_wholesale_t = clean_price(row, 6) if len(row) > 6 else "N/A"  # Today
+                
+                # Retail prices - Fixed indices based on actual data structure
+                pettah_retail_y = clean_price(row, 8) if len(row) > 8 else "N/A"  # Last Friday
+                pettah_retail_t = clean_price(row, 9) if len(row) > 9 else "N/A"  # Today
+                dambulla_retail_y = clean_price(row, 10) if len(row) > 10 else "N/A"  # Last Friday
+                dambulla_retail_t = clean_price(row, 11) if len(row) > 11 else "N/A"  # Today
+                narahenpita_retail_y = clean_price(row, 12) if len(row) > 12 else "N/A"  # Last Friday
+                narahenpita_retail_t = clean_price(row, 13) if len(row) > 13 else "N/A"  # Today
+
+                print(f"Monday format prices for {row[0]}:")
+
+                print(f"Pettah wholesale: Yesterday (2)={row[2] if len(row)>2 else 'N/A'}, Today (4)={row[3] if len(row)>3 else 'N/A'}")
+                print(f"Dambulla wholesale: Yesterday (5)={row[4] if len(row)>4 else 'N/A'}, Today (7)={row[6] if len(row)>6 else 'N/A'}")
+                print(f"Pettah wholesale: Yesterday={pettah_wholesale_y}, Today={pettah_wholesale_t}")
+                print(f"Dambulla wholesale: Yesterday={dambulla_wholesale_y}, Today={dambulla_wholesale_t}")
+
+                print(f"Pettah retail: Last Friday (8)={row[8] if len(row)>8 else 'N/A'}, Today (9)={row[9] if len(row)>9 else 'N/A'}")
+                print(f"Dambulla retail: Last Friday (10)={row[10] if len(row)>10 else 'N/A'}, Today (11)={row[11] if len(row)>11 else 'N/A'}")
+                print(f"Narahenpita retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (13)={row[13] if len(row)>13 else 'N/A'}")
+                print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
             elif len(row) == 18:
                 # Wholesale prices
                 pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"  # Last Friday
@@ -518,6 +546,34 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Pettah retail: Last Friday (7)={row[7] if len(row)>7 else 'N/A'}, Today (8)={row[8] if len(row)>8 else 'N/A'}")
                 print(f"Dambulla retail: Last Friday (9)={row[9] if len(row)>9 else 'N/A'}, Today (10)={row[10] if len(row)>10 else 'N/A'}")
                 print(f"Narahenpita retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (14)={row[14] if len(row)>14 else 'N/A'}")
+                print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            elif len(row) == 16:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"  # Yesterday
+                pettah_wholesale_t = clean_price(row, 4) if len(row) > 4 else "N/A"  # Today
+                dambulla_wholesale_y = clean_price(row, 5) if len(row) > 5 else "N/A"  # Yesterday
+                dambulla_wholesale_t = clean_price(row, 7) if len(row) > 7 else "N/A"  # Today
+                
+                # Retail prices - Fixed indices based on actual data structure
+                pettah_retail_y = clean_price(row, 8) if len(row) > 8 else "N/A"  # Yesterday
+                pettah_retail_t = clean_price(row, 9) if len(row) > 9 else "N/A"  # Today
+                dambulla_retail_y = clean_price(row, 10) if len(row) > 10 else "N/A"  # Yesterday
+                dambulla_retail_t = clean_price(row, 11) if len(row) > 11 else "N/A"  # Today
+                narahenpita_retail_y = clean_price(row, 13) if len(row) > 13 else "N/A"  # Yesterday
+                narahenpita_retail_t = clean_price(row, 15) if len(row) > 15 else "N/A"  # Today
+
+                print(f"Monday format prices for {row[0]}:")
+
+                print(f"Pettah wholesale: Yesterday (3)={row[3] if len(row)>3 else 'N/A'}, Today (4)={row[4] if len(row)>4 else 'N/A'}")
+                print(f"Dambulla wholesale: Yesterday (5)={row[5] if len(row)>5 else 'N/A'}, Today (7)={row[7] if len(row)>7 else 'N/A'}")
+                print(f"Pettah wholesale: Yesterday={pettah_wholesale_y}, Today={pettah_wholesale_t}")
+                print(f"Dambulla wholesale: Yesterday={dambulla_wholesale_y}, Today={dambulla_wholesale_t}")
+
+                print(f"Pettah retail: Last Friday (8)={row[8] if len(row)>8 else 'N/A'}, Today (9)={row[9] if len(row)>9 else 'N/A'}")
+                print(f"Dambulla retail: Last Friday (10)={row[10] if len(row)>10 else 'N/A'}, Today (11)={row[11] if len(row)>11 else 'N/A'}")
+                print(f"Narahenpita retail: Last Friday (13)={row[13] if len(row)>13 else 'N/A'}, Today (15)={row[15] if len(row)>15 else 'N/A'}")
                 print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
                 print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
