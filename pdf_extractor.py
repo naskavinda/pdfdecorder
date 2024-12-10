@@ -380,6 +380,34 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
                 print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            elif len(row) == 18:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"  # Last Friday
+                pettah_wholesale_t = clean_price(row, 5) if len(row) > 5 else "N/A"  # Today
+                dambulla_wholesale_y = clean_price(row, 6) if len(row) > 6 else "N/A"  # Last Friday
+                dambulla_wholesale_t = clean_price(row, 8) if len(row) > 8 else "N/A"  # Today
+                
+                # Retail prices - Fixed indices based on actual data structure
+                pettah_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"  # Last Friday
+                pettah_retail_t = clean_price(row, 10) if len(row) > 10 else "N/A"  # Today
+                dambulla_retail_y = clean_price(row, 12) if len(row) > 12 else "N/A"  # Last Friday
+                dambulla_retail_t = clean_price(row, 13) if len(row) > 13 else "N/A"  # Today
+                narahenpita_retail_y = clean_price(row, 15) if len(row) > 15 else "N/A"  # Last Friday
+                narahenpita_retail_t = clean_price(row, 17) if len(row) > 17 else "N/A"  # Today
+
+                print(f"Monday format prices for {row[0]}:")
+
+                print(f"Pettah wholesale: Yesterday (3)={row[3] if len(row)>3 else 'N/A'}, Today (5)={row[5] if len(row)>5 else 'N/A'}")
+                print(f"Dambulla wholesale: Yesterday (6)={row[6] if len(row)>6 else 'N/A'}, Today (8)={row[8] if len(row)>8 else 'N/A'}")
+                print(f"Pettah wholesale: Yesterday={pettah_wholesale_y}, Today={pettah_wholesale_t}")
+                print(f"Dambulla wholesale: Yesterday={dambulla_wholesale_y}, Today={dambulla_wholesale_t}")
+
+                print(f"Pettah retail: Last Friday (9)={row[9] if len(row)>9 else 'N/A'}, Today (10)={row[10] if len(row)>10 else 'N/A'}")
+                print(f"Dambulla retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (13)={row[13] if len(row)>13 else 'N/A'}")
+                print(f"Narahenpita retail: Last Friday (15)={row[15] if len(row)>15 else 'N/A'}, Today (17)={row[17] if len(row)>17 else 'N/A'}")
+                print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
             else:
                 # Wholesale prices
                 pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"  # Last Friday
@@ -411,17 +439,17 @@ def extract_prices(row, is_monday_format=False):
         else:
             if len(row) == 13:
                 # Wholesale prices
-                pettah_wholesale_y = clean_price(row, 2) if len(row) > 2 else "N/A"  # Last Friday
+                pettah_wholesale_y = clean_price(row, 2) if len(row) > 2 else "N/A"  # Yesterday
                 pettah_wholesale_t = clean_price(row, 3) if len(row) > 3 else "N/A"  # Today
-                dambulla_wholesale_y = clean_price(row, 4) if len(row) > 4 else "N/A"  # Last Friday
+                dambulla_wholesale_y = clean_price(row, 4) if len(row) > 4 else "N/A"  # Yesterday
                 dambulla_wholesale_t = clean_price(row, 6) if len(row) > 6 else "N/A"  # Today
                 
                 # Retail prices - Fixed indices based on actual data structure
-                pettah_retail_y = clean_price(row, 7) if len(row) > 7 else "N/A"  # Last Friday
+                pettah_retail_y = clean_price(row, 7) if len(row) > 7 else "N/A"  # Yesterday
                 pettah_retail_t = clean_price(row, 8) if len(row) > 8 else "N/A"  # Today
-                dambulla_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"  # Last Friday
+                dambulla_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"  # Yesterday
                 dambulla_retail_t = clean_price(row, 10) if len(row) > 10 else "N/A"  # Today
-                narahenpita_retail_y = clean_price(row, 11) if len(row) > 11 else "N/A"  # Last Friday
+                narahenpita_retail_y = clean_price(row, 11) if len(row) > 11 else "N/A"  # Yesterday
                 narahenpita_retail_t = clean_price(row, 12) if len(row) > 12 else "N/A"  # Today
 
                 print(f"Monday format prices for {row[0]}:")
@@ -465,6 +493,58 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
                 print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            elif len(row) == 15:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 2) if len(row) > 2 else "N/A"  # Yesterday
+                pettah_wholesale_t = clean_price(row, 3) if len(row) > 3 else "N/A"  # Today
+                dambulla_wholesale_y = clean_price(row, 4) if len(row) > 4 else "N/A"  # Yesterday
+                dambulla_wholesale_t = clean_price(row, 6) if len(row) > 6 else "N/A"  # Today
+                
+                # Retail prices - Fixed indices based on actual data structure
+                pettah_retail_y = clean_price(row, 7) if len(row) > 7 else "N/A"  # Yesterday
+                pettah_retail_t = clean_price(row, 8) if len(row) > 8 else "N/A"  # Today
+                dambulla_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"  # Yesterday
+                dambulla_retail_t = clean_price(row, 10) if len(row) > 10 else "N/A"  # Today
+                narahenpita_retail_y = clean_price(row, 12) if len(row) > 12 else "N/A"  # Yesterday
+                narahenpita_retail_t = clean_price(row, 14) if len(row) > 14 else "N/A"  # Today
+
+                print(f"Monday format prices for {row[0]}:")
+
+                print(f"Pettah wholesale: Yesterday (2)={row[2] if len(row)>2 else 'N/A'}, Today (3)={row[3] if len(row)>3 else 'N/A'}")
+                print(f"Dambulla wholesale: Yesterday (4)={row[4] if len(row)>4 else 'N/A'}, Today (6)={row[6] if len(row)>6 else 'N/A'}")
+                print(f"Pettah wholesale: Yesterday={pettah_wholesale_y}, Today={pettah_wholesale_t}")
+                print(f"Dambulla wholesale: Yesterday={dambulla_wholesale_y}, Today={dambulla_wholesale_t}")
+
+                print(f"Pettah retail: Last Friday (7)={row[7] if len(row)>7 else 'N/A'}, Today (8)={row[8] if len(row)>8 else 'N/A'}")
+                print(f"Dambulla retail: Last Friday (9)={row[9] if len(row)>9 else 'N/A'}, Today (10)={row[10] if len(row)>10 else 'N/A'}")
+                print(f"Narahenpita retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (14)={row[14] if len(row)>14 else 'N/A'}")
+                print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            elif len(row) == 17:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"
+                pettah_wholesale_t = clean_price(row, 5) if len(row) > 5 else "N/A"
+                dambulla_wholesale_y = clean_price(row, 6) if len(row) > 6 else "N/A"
+                dambulla_wholesale_t = clean_price(row, 8) if len(row) > 8 else "N/A"
+
+                # Retail prices
+                pettah_retail_y = clean_price(row, 9) if len(row) > 9 else "N/A"
+                pettah_retail_t = clean_price(row, 10) if len(row) > 10 else "N/A"
+                dambulla_retail_y = clean_price(row, 11) if len(row) > 11 else "N/A"
+                dambulla_retail_t = clean_price(row, 12) if len(row) > 12 else "N/A"
+                narahenpita_retail_y = clean_price(row, 14) if len(row) > 14 else "N/A"
+                narahenpita_retail_t = clean_price(row, 16) if len(row) > 16 else "N/A"
+                
+                print(f"Regular format prices for {row[0]} length={len(row)}")
+                print(f"Raw values at retail indices:")
+                print(f"Pettah retail: Yesterday (9)={row[9] if len(row)>9 else 'N/A'}, Today (10)={row[10] if len(row)>10 else 'N/A'}")
+                print(f"Dambulla retail: Yesterday (11)={row[11] if len(row)>11 else 'N/A'}, Today (12)={row[12] if len(row)>12 else 'N/A'}")
+                print(f"Narahenpita retail: Yesterday (14)={row[14] if len(row)>14 else 'N/A'}, Today (16)={row[16] if len(row)>16 else 'N/A'}")
+                print(f"Cleaned values:")
+                print(f"Pettah retail: Yesterday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Yesterday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Yesterday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
             else:
                 # Regular report indices (Yesterday/Today format)
                 pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"
@@ -802,9 +882,12 @@ def extract_pdf_data(pdf_path):
             for i, row in enumerate(table):
                 print(f"Row {i}: {row}")
             
-            # Get the date from filename (format: price_report_YYYYMMDD_e.pdf)
+            # Get the date from filename (both formats: price_report_YYYYMMDD.pdf and price_report_YYYYMMDD_e.pdf)
             filename = os.path.basename(pdf_path)
-            match = re.match(r'price_report_(\d{8})_e\.pdf', filename)
+            
+            # Try both patterns
+            match = re.match(r'price_report_(\d{8})\.pdf', filename) or re.match(r'price_report_(\d{8})_e\.pdf', filename)
+            
             if not match:
                 print(f"Error: Filename {filename} does not match expected format")
                 return None
@@ -890,8 +973,8 @@ def main():
     os.makedirs('reports', exist_ok=True)
     os.makedirs('data/processed', exist_ok=True)
     
-    # Define the regex pattern for PDF files
-    pattern = r'^price_report_\d{8}_e\.pdf$'
+    # Define the regex patterns for both PDF file formats
+    pattern = r'^price_report_\d{8}(?:_e)?\.pdf$'
     
     # Process all PDF files in the data directory
     pdf_dir = 'data'
