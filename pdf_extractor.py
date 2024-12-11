@@ -322,7 +322,8 @@ def clean_price(row, index):
             price_str = 'N/A'
         
         # If the price starts with a comma, add a leading digit
-        if price_str.startswith(',') and index > 1:
+        # if price_str.startswith(',') and index > 1:
+        if index > 2:
             if '.00' in row[index - 1]:
                 price_str = row[index - 1].split('.00')[1] + price_str
             else:
@@ -1028,7 +1029,7 @@ def extract_pdf_data(pdf_path):
         print(f"Error extracting data from {pdf_path}: {str(e)}")
         return None
 
-def main():
+def main(specific_pdf=None):
     # Create necessary directories if they don't exist
     os.makedirs('reports', exist_ok=True)
     os.makedirs('data/processed', exist_ok=True)
@@ -1036,41 +1037,77 @@ def main():
     # Define the regex patterns for both PDF file formats
     pattern = r'^price_report_\d{8}(?:_e)?\.pdf$'
     
-    # Process all PDF files in the data directory
-    pdf_dir = 'data'
-    for filename in os.listdir(pdf_dir):
-        # Check if the file matches our pattern and is a file (not directory)
-        if re.match(pattern, filename) and os.path.isfile(os.path.join(pdf_dir, filename)):
-            # Extract data from PDF
-            pdf_path = os.path.join(pdf_dir, filename)
-            extracted_data = extract_pdf_data(pdf_path)
-            
-            if extracted_data:
-                # Store in MongoDB
-                for document in extracted_data:
-                    # Use date and table_index as unique identifier
-                    query = {
-                        'date': document['date'],
-                        'table_index': document['table_index']
-                    }
-                    
-                    # Update or insert the document
-                    collection.update_one(
-                        query,
-                        {'$set': document},
-                        upsert=True
-                    )
+    if specific_pdf:
+        # Process specific PDF file
+        if not os.path.isfile(specific_pdf):
+            print(f"Error: File {specific_pdf} not found")
+            return
+        
+        # Extract data from specific PDF
+        extracted_data = extract_pdf_data(specific_pdf)
+        
+        if extracted_data:
+            # Store in MongoDB
+            for document in extracted_data:
+                # Use date and table_index as unique identifier
+                query = {
+                    'date': document['date'],
+                    'table_index': document['table_index']
+                }
                 
-                # Move the processed file to the processed folder
-                processed_path = os.path.join(pdf_dir, 'processed', filename)
-                os.rename(pdf_path, processed_path)
-                print(f"Successfully processed and stored data from {filename}")
-                print(f"Moved {filename} to processed folder")
-            else:
-                print(f"Failed to process {filename}")
+                # Update or insert the document
+                collection.update_one(
+                    query,
+                    {'$set': document},
+                    upsert=True
+                )
+            
+            print(f"Successfully processed and stored data from {os.path.basename(specific_pdf)}")
         else:
-            if filename.endswith('.pdf'):
-                print(f"Skipping {filename} as it doesn't match the required format")
+            print(f"Failed to process {os.path.basename(specific_pdf)}")
+    else:
+        # Process all PDF files in the data directory
+        pdf_dir = 'data'
+        for filename in os.listdir(pdf_dir):
+            # Check if the file matches our pattern and is a file (not directory)
+            if re.match(pattern, filename) and os.path.isfile(os.path.join(pdf_dir, filename)):
+                # Extract data from PDF
+                pdf_path = os.path.join(pdf_dir, filename)
+                extracted_data = extract_pdf_data(pdf_path)
+                
+                if extracted_data:
+                    # Store in MongoDB
+                    for document in extracted_data:
+                        # Use date and table_index as unique identifier
+                        query = {
+                            'date': document['date'],
+                            'table_index': document['table_index']
+                        }
+                        
+                        # Update or insert the document
+                        collection.update_one(
+                            query,
+                            {'$set': document},
+                            upsert=True
+                        )
+                    
+                    # Move the processed file to the processed folder
+                    processed_path = os.path.join(pdf_dir, 'processed', filename)
+                    os.rename(pdf_path, processed_path)
+                    print(f"Successfully processed and stored data from {filename}")
+                    print(f"Moved {filename} to processed folder")
+                else:
+                    print(f"Failed to process {filename}")
+            else:
+                if filename.endswith('.pdf'):
+                    print(f"Skipping {filename} as it doesn't match the required format")
 
 if __name__ == "__main__":
-    main()
+    import sys
+    
+    if len(sys.argv) > 1:
+        # If a PDF file is specified as command line argument
+        main(sys.argv[1])
+    else:
+        # Run with default behavior
+        main()
