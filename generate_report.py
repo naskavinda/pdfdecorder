@@ -115,6 +115,7 @@ def generate_single_report(doc, report_file):
     # Save to MongoDB first
     save_to_mongodb(doc)
     
+    # Create the report
     with open(report_file, 'w', encoding='utf-8') as f:
         report_date = doc.get('date', 'Unknown Date')
         
@@ -194,6 +195,14 @@ def generate_single_report(doc, report_file):
         f.write("\nNote: All prices are in Sri Lankan Rupees (Rs.)\n")
     
     print(f"Report generated: {report_file}")
+
+    # Update document status to processed using date as identifier
+    date = doc.get('date')
+    if date:
+        db['row_data'].update_many(
+            {'date': date},
+            {'$set': {'status': 'processed'}}
+        )
 
 def generate_report():
     """Generate reports for all documents in the database"""
@@ -296,9 +305,15 @@ def display_todays_prices(data):
                 print("-" * 60)
 
 if __name__ == '__main__':
-    # Get all documents from the most recent date
+    # Get all unprocessed documents from the most recent date
     latest_date = db['row_data'].find_one({}, sort=[("date", -1)])['date']
-    latest_docs = db['row_data'].find({"date": latest_date})
+    latest_docs = db['row_data'].find({
+        "date": latest_date,
+        "$or": [
+            {"status": {"$exists": False}},
+            {"status": {"$ne": "processed"}}
+        ]
+    })
     
     print(f"Found data for date: {latest_date}")
     
