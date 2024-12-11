@@ -42,12 +42,6 @@ data/processed/*
 !data/processed/price_report_20241203_e.pdf
 !data/processed/price_report_20241209_e.pdf
 
-reports/*
-!reports/price_report_2024-12-04.txt
-!reports/price_report_2024-12-03.txt
-!reports/price_report_2024-12-05.txt
-!reports/price_report_2024-12-09.txt
-
 *.pdf
 !data/processed/price_report_20241205_e.pdf
 !data/processed/price_report_20241204_e.pdf
