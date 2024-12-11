@@ -10,6 +10,8 @@ client = MongoClient('mongodb://root:secret@localhost:27017/')
 db = client['central_bank']
 collection = db['row_data']
 
+should_process_pdf = None
+
 def safe_get_price(cell):
     """Safely get price from cell"""
     try:
@@ -343,6 +345,8 @@ def extract_prices(row, is_monday_format=False):
                      narahenpita_retail_yesterday, narahenpita_retail_today)
     All values will be strings, with "N/A" for null values.
     """
+    global should_process_pdf
+    
     try:
         # Print row contents for debugging
         print(f"Raw row data: {row}")
@@ -659,7 +663,13 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Dambulla retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (14)={row[14] if len(row)>14 else 'N/A'} Yesterday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday (16)={row[16] if len(row)>16 else 'N/A'}, Today (18)={row[18] if len(row)>18 else 'N/A'} Yesterday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
         
-        
+            
+        if row[0] and row[0].strip() == "Beans":
+            if should_process_pdf is None:  # Only ask if we haven't decided yet
+                user_input = input("\nFound 'Beans' in the data. Do you want to process this PDF? (y/n): ")
+                should_process_pdf = user_input.lower() == 'y'
+                if not should_process_pdf:
+                    return None  # Return None to indicate we should skip this PDF
 
         return (pettah_wholesale_y, pettah_wholesale_t,
                 dambulla_wholesale_y, dambulla_wholesale_t,
@@ -673,6 +683,11 @@ def extract_prices(row, is_monday_format=False):
 
 def process_table_data(table):
     """Convert table data to a MongoDB-compatible format with proper column mapping"""
+    global should_process_pdf
+    
+    if should_process_pdf is False:  # If user chose not to process, return empty list
+        return []
+    
     if not table:
         return []
 
@@ -926,6 +941,8 @@ def extract_pdf_data(pdf_path):
     """
     Extract tables from PDF using pdfplumber and return the data
     """
+    global should_process_pdf
+    should_process_pdf = None  # Reset the flag for each new PDF
     try:
         print(f"Reading page 2 from {pdf_path}...")
         with pdfplumber.open(pdf_path) as pdf:
@@ -949,7 +966,7 @@ def extract_pdf_data(pdf_path):
             if not table:
                 print(f"No table found on page 2 of {pdf_path}")
                 return None
-            
+
             # Print raw table data for debugging
             print("\nRaw table data:")
             for i, row in enumerate(table):
