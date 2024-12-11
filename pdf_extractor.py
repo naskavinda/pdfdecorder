@@ -431,6 +431,29 @@ def extract_prices(row, is_monday_format=False):
                 print(f"Pettah retail: Last Friday={pettah_retail_y}, Today={pettah_retail_t}")
                 print(f"Dambulla retail: Last Friday={dambulla_retail_y}, Today={dambulla_retail_t}")
                 print(f"Narahenpita retail: Last Friday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
+            elif len(row) == 21:
+                # Wholesale prices
+                pettah_wholesale_y = clean_price(row, 4) if len(row) > 4 else "N/A"  # Last Friday
+                pettah_wholesale_t = clean_price(row, 6) if len(row) > 6 else "N/A"  # Today
+                dambulla_wholesale_y = clean_price(row, 7) if len(row) > 7 else "N/A"  # Last Friday
+                dambulla_wholesale_t = clean_price(row, 10) if len(row) > 10 else "N/A"  # Today
+                
+                # Retail prices - Fixed indices based on actual data structure
+                pettah_retail_y = clean_price(row, 12) if len(row) > 12 else "N/A"  # Last Friday
+                pettah_retail_t = clean_price(row, 13) if len(row) > 13 else "N/A"  # Today
+                dambulla_retail_y = clean_price(row, 15) if len(row) > 15 else "N/A"  # Last Friday
+                dambulla_retail_t = clean_price(row, 17) if len(row) > 17 else "N/A"  # Today
+                narahenpita_retail_y = clean_price(row, 19) if len(row) > 19 else "N/A"  # Last Friday
+                narahenpita_retail_t = clean_price(row, 20) if len(row) > 20 else "N/A"  # Today
+
+                print(f"Monday format[ROW 21] prices for {row[0]}:")
+
+                print(f"Pettah wholesale: Yesterday (4)={row[4] if len(row)>4 else 'N/A'}, Today (6)={row[6] if len(row)>6 else 'N/A'} Yesterday={pettah_wholesale_y}, Today={pettah_wholesale_t}")
+                print(f"Dambulla wholesale: Yesterday (7)={row[7] if len(row)>7 else 'N/A'}, Today (10)={row[10] if len(row)>10 else 'N/A'} Yesterday={dambulla_wholesale_y}, Today={dambulla_wholesale_t}")
+
+                print(f"Pettah retail: Last Friday (12)={row[12] if len(row)>12 else 'N/A'}, Today (13)={row[13] if len(row)>13 else 'N/A'} Yesterday={pettah_retail_y}, Today={pettah_retail_t}")
+                print(f"Dambulla retail: Last Friday (15)={row[15] if len(row)>15 else 'N/A'}, Today (17)={row[17] if len(row)>17 else 'N/A'} Yesterday={dambulla_retail_y}, Today={dambulla_retail_t}")
+                print(f"Narahenpita retail: Last Friday (19)={row[19] if len(row)>19 else 'N/A'}, Today (20)={row[20] if len(row)>20 else 'N/A'} Yesterday={narahenpita_retail_y}, Today={narahenpita_retail_t}")
             else:
                 # Wholesale prices
                 pettah_wholesale_y = clean_price(row, 3) if len(row) > 3 else "N/A"  # Last Friday
@@ -684,10 +707,6 @@ def process_table_data(table):
                     print(f"Is Monday format: {is_monday_format}")
                     prices = extract_prices(row, is_monday_format)
                     if any(prices):  # Only add if we have any price data
-                        print(f"Extracted prices for {item_name}:")
-                        print(f"Pettah retail - Yesterday: {prices[4]}, Today: {prices[5]}")
-                        print(f"Dambulla retail - Yesterday: {prices[6]}, Today: {prices[7]}")
-                        print(f"Narahenpita retail - Yesterday: {prices[8]}, Today: {prices[9]}")
                         
                         data_item = {
                             'type': 'vegetables',
@@ -727,10 +746,6 @@ def process_table_data(table):
                     print(f"Is Monday format: {is_monday_format}")
                     prices = extract_prices(row, is_monday_format)
                     if any(prices):  # Only add if we have any price data
-                        print(f"Extracted prices for {item_name}:")
-                        print(f"Pettah retail - Yesterday: {prices[4]}, Today: {prices[5]}")
-                        print(f"Dambulla retail - Yesterday: {prices[6]}, Today: {prices[7]}")
-                        print(f"Narahenpita retail - Yesterday: {prices[8]}, Today: {prices[9]}")
                         
                         data_item = {
                             'type': 'other',
@@ -770,10 +785,6 @@ def process_table_data(table):
                     print(f"Is Monday format: {is_monday_format}")
                     prices = extract_prices(row, is_monday_format)
                     if any(prices):  # Only add if we have any price data
-                        print(f"Extracted prices for {item_name}:")
-                        print(f"Pettah retail - Yesterday: {prices[4]}, Today: {prices[5]}")
-                        print(f"Dambulla retail - Yesterday: {prices[6]}, Today: {prices[7]}")
-                        print(f"Narahenpita retail - Yesterday: {prices[8]}, Today: {prices[9]}")
                         
                         data_item = {
                             'type': 'fruits',
@@ -813,10 +824,6 @@ def process_table_data(table):
                     print(f"Is Monday format: {is_monday_format}")
                     prices = extract_prices(row, is_monday_format)
                     if any(prices):  # Only add if we have any price data
-                        print(f"Extracted prices for {item_name}:")
-                        print(f"Pettah retail - Yesterday: {prices[4]}, Today: {prices[5]}")
-                        print(f"Dambulla retail - Yesterday: {prices[6]}, Today: {prices[7]}")
-                        print(f"Narahenpita retail - Yesterday: {prices[8]}, Today: {prices[9]}")
                         
                         data_item = {
                             'type': 'rice',
@@ -856,10 +863,6 @@ def process_table_data(table):
                     print(f"Is Monday format: {is_monday_format}")
                     prices = extract_prices(row, is_monday_format)
                     if any(prices):  # Only add if we have any price data
-                        print(f"Extracted prices for {item_name}:")
-                        print(f"Pettah retail - Yesterday: {prices[4]}, Today: {prices[5]}")
-                        print(f"Dambulla retail - Yesterday: {prices[6]}, Today: {prices[7]}")
-                        print(f"Narahenpita retail - Yesterday: {prices[8]}, Today: {prices[9]}")
                         
                         data_item = {
                             'type': 'fish',
