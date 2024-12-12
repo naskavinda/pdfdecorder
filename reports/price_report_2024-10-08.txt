@@ -146,7 +146,7 @@ Item                           Peliyagoda         Negombo
 Kelawalla                          900.00        1,150.00
 Thalapath                        1,600.00        1,450.00
 Balaya                             800.00             N/A
-Paraw                                 N/A        1,180.00
+Paraw                            1,100.00        1,180.00
 Salaya                             300.00          300.00
 Hurulla                            500.00          520.00
 Linna                              450.00          450.00
@@ -158,8 +158,8 @@ Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
 Kelawalla                             N/A        1,690.00        1,880.00
 Thalapath                             N/A        1,850.00        2,380.00
-Balaya                                N/A             N/A             N/A
-Paraw                                 N/A             N/A             N/A
+Balaya                                N/A             N/A        1,140.00
+Paraw                                 N/A        2,025.00             N/A
 Salaya                                N/A          440.00          500.00
 Hurulla                               N/A          700.00          820.00
 Linna                                 N/A          590.00          630.00

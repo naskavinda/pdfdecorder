@@ -76,7 +76,7 @@ Red Dhal                           290.00             N/A          300.00
 Sugar (White)                      270.00             N/A          260.00
 Egg (White)                           N/A             N/A           43.00
 Katta (Imp)                      2,000.00             N/A        2,500.00
-Sprat (Imp)                        900.00             N/A             N/A
+Sprat (Imp)                        900.00             N/A        1,600.00
 
 --------------------------------------------------------------------------------
 
@@ -146,7 +146,7 @@ Item                           Peliyagoda         Negombo
 Kelawalla                        1,400.00        1,150.00
 Thalapath                        2,000.00        1,750.00
 Balaya                                N/A          620.00
-Paraw                                 N/A        1,180.00
+Paraw                            1,200.00        1,180.00
 Salaya                             400.00          260.00
 Hurulla                            650.00          600.00
 Linna                              400.00          400.00
@@ -157,9 +157,9 @@ Retail Prices (Rs./kg):
 Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
 Kelawalla                             N/A        1,740.00        2,380.00
-Thalapath                             N/A             N/A        2,600.00
+Thalapath                             N/A        2,650.00        2,600.00
 Balaya                                N/A          790.00        1,080.00
-Paraw                                 N/A             N/A        1,860.00
+Paraw                                 N/A        1,350.00        1,860.00
 Salaya                                N/A          400.00          460.00
 Hurulla                               N/A          790.00          960.00
 Linna                                 N/A          590.00          560.00

@@ -49,7 +49,7 @@ Big Onion (Local)                     N/A             N/A
 Big Onion (Imp)                    400.00          385.00
 Potato (Local)                     375.00             N/A
 Potato (Imp)                       123.00          120.00
-Dried Chilli (Imp)                    N/A          795.00
+Dried Chilli (Imp)               1,050.00          795.00
 Coconut (Avg.)                      90.00           83.00
 Coconut oil                           N/A             N/A
 Red Dhal                           300.00             N/A

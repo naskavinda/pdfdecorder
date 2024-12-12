@@ -146,7 +146,7 @@ Item                           Peliyagoda         Negombo
 Kelawalla                        1,200.00        1,000.00
 Thalapath                        2,100.00        2,250.00
 Balaya                             900.00             N/A
-Paraw                                 N/A        1,500.00
+Paraw                            1,600.00        1,500.00
 Salaya                             400.00          390.00
 Hurulla                            950.00          950.00
 Linna                              700.00          720.00
@@ -157,11 +157,11 @@ Retail Prices (Rs./kg):
 Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
 Kelawalla                             N/A        1,590.00        2,680.00
-Thalapath                             N/A             N/A        2,860.00
+Thalapath                             N/A        2,650.00        2,860.00
 Balaya                                N/A             N/A        1,100.00
 Paraw                                 N/A        2,550.00             N/A
 Salaya                                N/A          490.00          540.00
-Hurulla                               N/A        1,150.00             N/A
+Hurulla                               N/A        1,150.00        1,200.00
 Linna                                 N/A          890.00          940.00
 
 --------------------------------------------------------------------------------

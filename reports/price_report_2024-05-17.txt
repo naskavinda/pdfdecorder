@@ -17,7 +17,7 @@ Brinjal                            160.00          155.00
 Pumpkin                             70.00           63.00
 Snake gourd                        170.00          105.00
 Green Chilli                       130.00          165.00
-Lime                               200.00        1,250.00
+Lime                             1,200.00        1,250.00
 
 
 Retail Prices (Rs./kg):
@@ -55,7 +55,7 @@ Coconut oil                        543.00             N/A
 Red Dhal                           279.00             N/A
 Sugar (White)                      255.00             N/A
 Egg (White)                         45.00             N/A
-Katta (Imp)                        700.00             N/A
+Katta (Imp)                      1,700.00             N/A
 Sprat (Imp)                        800.00             N/A
 
 
@@ -143,10 +143,10 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                           Peliyagoda         Negombo
 --------------------------------------------------------------------------------
-Kelawalla                          550.00        1,150.00
-Thalapath                          900.00        1,600.00
-Balaya                             200.00             N/A
-Paraw                              450.00             N/A
+Kelawalla                        1,550.00        1,150.00
+Thalapath                        1,900.00        1,600.00
+Balaya                           1,200.00             N/A
+Paraw                            1,450.00             N/A
 Salaya                             620.00          550.00
 Hurulla                            900.00          900.00
 Linna                              750.00          720.00

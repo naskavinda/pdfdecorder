@@ -146,9 +146,9 @@ Item                           Peliyagoda         Negombo
 Kelawalla                        1,300.00        1,050.00
 Thalapath                        2,000.00        1,450.00
 Balaya                             850.00             N/A
-Paraw                                 N/A        1,200.00
+Paraw                            1,300.00        1,200.00
 Salaya                             300.00          320.00
-Hurulla                               N/A             N/A
+Hurulla                          1,100.00             N/A
 Linna                              600.00          520.00
 
 

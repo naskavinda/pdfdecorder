@@ -76,7 +76,7 @@ Red Dhal                           300.00             N/A          300.00
 Sugar (White)                      245.00             N/A          260.00
 Egg (White)                           N/A             N/A           37.00
 Katta (Imp)                      2,000.00             N/A             N/A
-Sprat (Imp)                        900.00             N/A             N/A
+Sprat (Imp)                        900.00             N/A        1,200.00
 
 --------------------------------------------------------------------------------
 
@@ -156,10 +156,10 @@ Retail Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
-Kelawalla                             N/A        1,540.00             N/A
-Thalapath                             N/A        2,050.00             N/A
-Balaya                                N/A             N/A             N/A
-Paraw                                 N/A             N/A             N/A
+Kelawalla                             N/A        1,540.00        2,440.00
+Thalapath                             N/A        2,050.00        2,280.00
+Balaya                                N/A             N/A        1,140.00
+Paraw                                 N/A             N/A        1,480.00
 Salaya                                N/A          390.00          460.00
 Hurulla                               N/A             N/A             N/A
 Linna                                 N/A          780.00          780.00

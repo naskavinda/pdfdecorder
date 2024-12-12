@@ -17,7 +17,7 @@ Brinjal                            200.00          150.00
 Pumpkin                             70.00           63.00
 Snake gourd                        300.00          140.00
 Green Chilli                       150.00          140.00
-Lime                                  N/A        1,050.00
+Lime                             1,000.00        1,050.00
 
 
 Retail Prices (Rs./kg):
@@ -55,7 +55,7 @@ Coconut oil                        543.00             N/A
 Red Dhal                           279.00             N/A
 Sugar (White)                      268.00             N/A
 Egg (White)                         45.00             N/A
-Katta (Imp)                        700.00             N/A
+Katta (Imp)                      1,700.00             N/A
 Sprat (Imp)                        800.00             N/A
 
 
@@ -143,9 +143,9 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                           Peliyagoda         Negombo
 --------------------------------------------------------------------------------
-Kelawalla                          600.00        1,250.00
-Thalapath                          900.00        1,600.00
-Balaya                             200.00             N/A
+Kelawalla                        1,600.00        1,250.00
+Thalapath                        1,900.00        1,600.00
+Balaya                           1,200.00             N/A
 Paraw                                 N/A             N/A
 Salaya                             650.00          550.00
 Hurulla                               N/A          900.00
@@ -158,10 +158,10 @@ Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
 Kelawalla                             N/A        1,760.00        2,380.00
 Thalapath                             N/A        2,000.00        2,600.00
-Balaya                                N/A             N/A             N/A
+Balaya                                N/A             N/A        1,400.00
 Paraw                                 N/A             N/A             N/A
 Salaya                                N/A          680.00          720.00
-Hurulla                               N/A        1,100.00             N/A
+Hurulla                               N/A        1,100.00        1,160.00
 Linna                                 N/A          890.00          900.00
 
 --------------------------------------------------------------------------------

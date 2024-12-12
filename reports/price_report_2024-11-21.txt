@@ -158,7 +158,7 @@ Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
 Kelawalla                             N/A        1,440.00        2,360.00
 Thalapath                             N/A        2,050.00        2,260.00
-Balaya                                N/A             N/A             N/A
+Balaya                                N/A             N/A        1,040.00
 Paraw                                 N/A             N/A        1,660.00
 Salaya                                N/A          450.00          540.00
 Hurulla                               N/A          980.00        1,240.00
