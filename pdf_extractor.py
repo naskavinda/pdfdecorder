@@ -442,15 +442,15 @@ def extract_prices(row, is_monday_format=False):
             key = f"O_{len(row)}"
             print(f"Using key Other: {key}")
             prices = extract_row_data(row, key)
-        should_process_pdf = "y" == "y"
-        # if row[0] and row[0].strip() == "Beans":
-        #     if should_process_pdf is None:  # Only ask if we haven't decided yet
-        #         user_input = input(
-        #             "\nFound 'Beans' in the data. Do you want to process this PDF? (y/n): "
-        #         )
-        #         should_process_pdf = user_input.lower() == "y"
-        #         if not should_process_pdf:
-        #             return None  # Return None to indicate we should skip this PDF
+        # should_process_pdf = "y" == "y"
+        if row[0] and row[0].strip() == "Beans":
+            if should_process_pdf is None:  # Only ask if we haven't decided yet
+                user_input = input(
+                    "\nFound 'Beans' in the data. Do you want to process this PDF? (y/n): "
+                )
+                should_process_pdf = user_input.lower() == "y"
+                if not should_process_pdf:
+                    return None  # Return None to indicate we should skip this PDF
 
         return (
             prices[0],
