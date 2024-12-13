@@ -16,26 +16,61 @@ should_process_pdf = None
 
 ORDER_VALUES = {
     "M_13": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
-    "M_14": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
+
+    "M_14_1": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
+    "M_14_2": [2, 3, 4, 7, 8, 9, 10, 11, 12, 13],
+
     "M_15": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
+
+    "M_16": [2, 4, 5, 8, 10, 11, 12, 13, 14, 15],
+
     "M_18": [3, 5, 6, 8, 9, 10, 12, 13, 15, 17],
+
     "M_19": [3, 5, 6, 8, 10, 11, 13, 14, 16, 18],
-    "M_20": [3, 5, 7, 9, 11, 12, 14, 15, 17, 19],
-    "M_21": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
-    "O_13": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
-    "O_14": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
+
+    "M_20_1": [3, 5, 7, 9, 11, 12, 14, 15, 17, 19],
+    "M_20_2": [2, 5, 6, 9, 11, 12, 14, 15, 17, 19],
+
+    "M_21_1": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
+    "M_21_2": [3, 5, 6, 8, 11, 13, 15, 16, 18, 20],
+
+    "O_13_1": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
+    "O_13_2": [2, 3, 4, 5, 7, 8, 9, 10, 11, 12],
+
+    "O_14_1": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
+    "O_14_2": [2, 3, 4, 7, 8, 9, 10, 11, 12, 13],
+
     "O_15_1": [2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
     "O_15_2": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
-    "O_16": [3, 4, 5, 7, 8, 9, 10, 11, 13, 15],
+    "O_15_3": [2, 3, 4, 6, 9, 10, 11, 12, 13, 14],
+    
+    "O_16_1": [3, 4, 5, 7, 8, 9, 10, 11, 13, 15],
+    "O_16_2": [3, 5, 6, 8, 10, 11, 12, 13, 14, 15],
+
     "O_17_1": [3, 5, 6, 8, 7, 10, 11, 12, 14, 16],
     "O_17_2": [2, 3, 4, 6, 7, 9, 11, 13, 14, 16],
+    "O_17_3": [3, 4, 6, 8, 10, 11, 12, 14, 15, 16],
+
+    "O_18_1": [2, 3, 4, 7, 9, 10, 11, 13, 15, 17],
+    "O_18_2": [2, 3, 4, 7, 8, 9, 11, 13, 15, 17],
+    "O_18_3": [3, 5, 6, 8, 10, 11, 12, 13, 15, 17],
+
     "O_19_1": [3, 5, 6, 8, 9, 10, 12, 14, 16, 18],
     "O_19_2": [3, 5, 7, 9, 11, 12, 14, 15, 16, 18],
     "O_19_3": [3, 5, 6, 9, 10, 11, 12, 14, 16, 18],
-    "O_20": [2, 3, 4, 7, 9, 11, 13, 15, 17, 19],
-    "O_21": [3, 4, 7, 9, 12, 14, 15, 17, 19, 20],
+
+    "O_20_1": [2, 3, 4, 7, 9, 11, 13, 15, 17, 19],
+    "O_20_2": [2, 3, 4, 7, 10, 12, 13, 15, 17, 19],
+    "O_20_3": [3, 5, 6, 7, 10, 12, 13, 15, 17, 19],
+
+    "O_21_1": [3, 4, 7, 9, 12, 14, 15, 17, 19, 20],
+    "O_21_2": [2, 3, 5, 8, 10, 12, 14, 16, 18, 20],
+    "O_21_3": [2, 3, 4, 8, 11, 13, 14, 16, 18, 20],
+    "O_21_4": [2, 3, 4, 7, 10, 12, 14, 16, 18, 20],
+
     "O_22_1": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
     "O_22_2": [3, 5, 7, 10, 12, 13, 15, 17, 19, 21],
+    "O_22_3": [2, 3, 5, 9, 11, 13, 15, 17, 19, 21],
 }
 
 
@@ -471,6 +506,12 @@ def extract_prices(row, key):
         # For Monday reports, the indices are different due to "Last Friday" format
         print(f"Using key: {key}")
         prices = extract_row_data(row, key)
+        
+        # Check if prices is None before proceeding
+        if prices is None:
+            print(f"Warning: Could not extract prices for key {key}")
+            return ("N/A",) * 10  # Return N/A for all 10 price fields
+            
         # should_process_pdf = "y" == "y"
         if row[0] and row[0].strip() == "Beans":
             if should_process_pdf is None:  # Only ask if we haven't decided yet
@@ -496,22 +537,26 @@ def extract_prices(row, key):
 
     except Exception as e:
         print(f"Error extracting prices: {str(e)}")
-        return None
+        return ("N/A",) * 10  # Return N/A for all 10 price fields
 
 
 def get_order_key(row, is_monday_format):
     """
     Determine the key for ORDER_VALUES based on the format and row length.
     If the key has variants, it will be handled by the calling function.
-    
+
     Args:
         row (list): The row of data
         is_monday_format (bool): Whether the format is Monday format
-        
+
     Returns:
         str: The key in format 'M_{length}' for Monday format or 'O_{length}' for other formats
     """
     print(f"First Row: {row}")
+    for i, cell in enumerate(row):
+        if not cell:
+            continue
+        print(f"{str(i).rjust(2)} | {cell}")
     key = f"M_{len(row)}" if is_monday_format else f"O_{len(row)}"
 
     if has_key_variants(key):
@@ -581,7 +626,7 @@ def process_table_data(table):
 
     # Now I need to desided the what is the key of ORDER_VALUES, If given key don't have variants then the key is equal to the given key
     # If given key have variants then the key need to get as a user input in interactive way.
-    # given key is equal to if is_monday_format is true then 'M_{len(row)}' else 'O_{len(row)}'
+    # given key is equal to if is_monday_format is true then 'M_{length}' else 'O_{length}'
 
     key = ""
     key_processed = False
@@ -598,8 +643,7 @@ def process_table_data(table):
                         key_processed = True
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if any(prices):  # Only add if we have any price data
-
+                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "vegetables",
                             "item": item_name,
@@ -639,8 +683,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if any(prices):  # Only add if we have any price data
-
+                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "other",
                             "item": item_name,
@@ -680,8 +723,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if any(prices):  # Only add if we have any price data
-
+                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "fruits",
                             "item": item_name,
@@ -719,8 +761,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if any(prices):  # Only add if we have any price data
-
+                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "rice",
                             "item": item_name,
@@ -758,8 +799,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if any(prices):  # Only add if we have any price data
-
+                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "fish",
                             "item": item_name,
