@@ -20,16 +20,22 @@ ORDER_VALUES = {
     "M_15": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
     "M_18": [3, 5, 6, 8, 9, 10, 12, 13, 15, 17],
     "M_19": [3, 5, 6, 8, 10, 11, 13, 14, 16, 18],
+    "M_20": [3, 5, 7, 9, 11, 12, 14, 15, 17, 19],
     "M_21": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
     "O_13": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
     "O_14": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
-    "O_15": [2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
+    "O_15_1": [2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
+    "O_15_2": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
     "O_16": [3, 4, 5, 7, 8, 9, 10, 11, 13, 15],
-    "O_17": [3, 5, 6, 8, 7, 10, 11, 12, 14, 16],
-    "O_19": [3, 5, 6, 8, 9, 10, 12, 14, 16, 18],
+    "O_17_1": [3, 5, 6, 8, 7, 10, 11, 12, 14, 16],
+    "O_17_2": [2, 3, 4, 6, 7, 9, 11, 13, 14, 16],
+    "O_19_1": [3, 5, 6, 8, 9, 10, 12, 14, 16, 18],
+    "O_19_2": [3, 5, 7, 9, 11, 12, 14, 15, 16, 18],
+    "O_19_3": [3, 5, 6, 9, 10, 11, 12, 14, 16, 18],
     "O_20": [2, 3, 4, 7, 9, 11, 13, 15, 17, 19],
     "O_21": [3, 4, 7, 9, 12, 14, 15, 17, 19, 20],
-    "O_22": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
+    "O_22_1": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
+    "O_22_2": [3, 5, 7, 10, 12, 13, 15, 17, 19, 21],
 }
 
 
@@ -339,7 +345,13 @@ def clean_price(row, index):
     """
     price_str = row[index]
     try:
-        if not price_str or pd.isna(price_str) or price_str == "n.a." or "n.a" in price_str or "n.a." in price_str:
+        if (
+            not price_str
+            or pd.isna(price_str)
+            or price_str == "n.a."
+            or "n.a" in price_str
+            or "n.a." in price_str
+        ):
             return "N/A"
 
         # Remove spaces
@@ -358,7 +370,9 @@ def clean_price(row, index):
             else:
                 price_str = row[index - 1] + price_str
         # Now convert to float, after removing the comma
-        float_value = float(price_str.replace(",", "").replace(" ", "").replace("n.a.", ""))
+        float_value = float(
+            price_str.replace(",", "").replace(" ", "").replace("n.a.", "")
+        )
         returnValue = str(float_value) if float_value else "N/A"
         return returnValue
     except Exception as e:
@@ -418,7 +432,27 @@ def extract_row_data(row, order_id):
     )
 
 
-def extract_prices(row, is_monday_format=False):
+def has_key_variants(key):
+    """
+    Check if a key has variants in ORDER_VALUES dictionary.
+    Example: If key is 'M_19', it will check for 'M_19_1', 'M_19_2', etc.
+    Returns True if variants exist, False otherwise.
+    """
+    # Look for any keys that start with the base key and have a variant number
+    variants = [k for k in ORDER_VALUES.keys() if k.startswith(key + "_")]
+    return len(variants) > 0
+
+
+def get_key_variants(key):
+    """
+    Get all variants of a key from ORDER_VALUES dictionary.
+    Example: If key is 'M_19', it will return ['M_19_1', 'M_19_2', 'M_19_3']
+    Returns empty list if no variants exist.
+    """
+    return [k for k in ORDER_VALUES.keys() if k.startswith(key + "_")]
+
+
+def extract_prices(row, key):
     """
     Extract and clean price values from a row.
     Returns tuple of (pettah_wholesale_yesterday, pettah_wholesale_today,
@@ -434,17 +468,9 @@ def extract_prices(row, is_monday_format=False):
         # Print row contents for debugging
         print(f"Raw row data: {row}")
         print(f"Row length: {len(row)}")
-        print(f"Is Monday format: {is_monday_format}")
-
         # For Monday reports, the indices are different due to "Last Friday" format
-        if is_monday_format:
-            key = f"M_{len(row)}"
-            print(f"Using key Monday: {key}")
-            prices = extract_row_data(row, key)
-        else:
-            key = f"O_{len(row)}"
-            print(f"Using key Other: {key}")
-            prices = extract_row_data(row, key)
+        print(f"Using key: {key}")
+        prices = extract_row_data(row, key)
         # should_process_pdf = "y" == "y"
         if row[0] and row[0].strip() == "Beans":
             if should_process_pdf is None:  # Only ask if we haven't decided yet
@@ -471,6 +497,31 @@ def extract_prices(row, is_monday_format=False):
     except Exception as e:
         print(f"Error extracting prices: {str(e)}")
         return None
+
+
+def get_order_key(row, is_monday_format):
+    """
+    Determine the key for ORDER_VALUES based on the format and row length.
+    If the key has variants, it will be handled by the calling function.
+    
+    Args:
+        row (list): The row of data
+        is_monday_format (bool): Whether the format is Monday format
+        
+    Returns:
+        str: The key in format 'M_{length}' for Monday format or 'O_{length}' for other formats
+    """
+    print(f"First Row: {row}")
+    key = f"M_{len(row)}" if is_monday_format else f"O_{len(row)}"
+
+    if has_key_variants(key):
+        variants = get_key_variants(key)
+        print(f"Variants for {key}: {variants}")
+        for i, variant in enumerate(variants):
+            print(f"{i + 1}: {ORDER_VALUES[variant]}")
+        key = input(f"Choose a variant for {key}: ")
+        return variants[int(key) - 1]
+    return key
 
 
 def process_table_data(table):
@@ -528,6 +579,12 @@ def process_table_data(table):
 
     all_data = []
 
+    # Now I need to desided the what is the key of ORDER_VALUES, If given key don't have variants then the key is equal to the given key
+    # If given key have variants then the key need to get as a user input in interactive way.
+    # given key is equal to if is_monday_format is true then 'M_{len(row)}' else 'O_{len(row)}'
+
+    key = ""
+    key_processed = False
     # Process vegetables section
     veg_start_idx, veg_end_idx = find_section_boundaries(table, header_row_idx)
     if veg_start_idx is not None and veg_end_idx is not None:
@@ -536,8 +593,11 @@ def process_table_data(table):
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
-                    print(f"Is Monday format: {is_monday_format}")
-                    prices = extract_prices(row, is_monday_format)
+                    if not key_processed:
+                        key = get_order_key(row, is_monday_format)
+                        key_processed = True
+                    print(f"using key: {key}")
+                    prices = extract_prices(row, key)
                     if any(prices):  # Only add if we have any price data
 
                         data_item = {
@@ -577,8 +637,8 @@ def process_table_data(table):
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
-                    print(f"Is Monday format: {is_monday_format}")
-                    prices = extract_prices(row, is_monday_format)
+                    print(f"using key: {key}")
+                    prices = extract_prices(row, key)
                     if any(prices):  # Only add if we have any price data
 
                         data_item = {
@@ -618,8 +678,8 @@ def process_table_data(table):
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
-                    print(f"Is Monday format: {is_monday_format}")
-                    prices = extract_prices(row, is_monday_format)
+                    print(f"using key: {key}")
+                    prices = extract_prices(row, key)
                     if any(prices):  # Only add if we have any price data
 
                         data_item = {
@@ -657,8 +717,8 @@ def process_table_data(table):
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
-                    print(f"Is Monday format: {is_monday_format}")
-                    prices = extract_prices(row, is_monday_format)
+                    print(f"using key: {key}")
+                    prices = extract_prices(row, key)
                     if any(prices):  # Only add if we have any price data
 
                         data_item = {
@@ -696,8 +756,8 @@ def process_table_data(table):
                 item_name = str(row[0]).strip() if row[0] else ""
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
-                    print(f"Is Monday format: {is_monday_format}")
-                    prices = extract_prices(row, is_monday_format)
+                    print(f"using key: {key}")
+                    prices = extract_prices(row, key)
                     if any(prices):  # Only add if we have any price data
 
                         data_item = {
