@@ -45,6 +45,7 @@ Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
 Red Onion (Local)                  283.00          275.00
 Red Onion (lmp)                    290.00          275.00
+Big Onion (Local)                     N/A             N/A
 Big Onion (Imp)                    453.00          595.00
 Potato (Local)                     300.00          215.00
 Potato (Imp)                       138.00          133.00
@@ -64,6 +65,7 @@ Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
 Red Onion (Local)                     N/A          295.00             N/A
 Red Onion (lmp)                    370.00          295.00          480.00
+Big Onion (Local)                     N/A             N/A             N/A
 Big Onion (Imp)                    575.00          615.00          500.00
 Potato (Local)                     380.00          235.00          360.00
 Potato (Imp)                       180.00          153.00          220.00
@@ -116,6 +118,8 @@ Nadu                               203.00               202.00
 Kekulu (White)                     198.00               193.00
 Kekulu (Red)                       183.00               164.00
 Ponni Samba (Imp)                  255.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -127,6 +131,8 @@ Nadu                               220.00          201.00          220.00
 Kekulu (White)                     220.00          195.00          210.00
 Kekulu (Red)                       210.00          175.00          175.00
 Ponni Samba (Imp)                  280.00             N/A          270.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 

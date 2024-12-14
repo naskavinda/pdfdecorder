@@ -118,6 +118,8 @@ Nadu                               219.00               222.00
 Kekulu (White)                     203.00               209.00
 Kekulu (Red)                       203.00               207.00
 Ponni Samba (Imp)                  278.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -129,6 +131,8 @@ Nadu                               230.00          221.00          220.00
 Kekulu (White)                     210.00          210.00          210.00
 Kekulu (Red)                       210.00          220.00          210.00
 Ponni Samba (Imp)                  290.00             N/A          290.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 

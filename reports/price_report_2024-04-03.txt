@@ -9,30 +9,30 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
-Beans                               80.00             N/A
-Carrot                             330.00             N/A
-Cabbage                            140.00             N/A
-Tomato                             100.00             N/A
-Brinjal                            150.00             N/A
-Pumpkin                            160.00             N/A
-Snake gourd                        130.00             N/A
-Green Chilli                       170.00             N/A
-Lime                               320.00             N/A
+Beans                               80.00           65.00
+Carrot                             330.00          310.00
+Cabbage                            140.00          100.00
+Tomato                             100.00           75.00
+Brinjal                            150.00          110.00
+Pumpkin                            160.00          145.00
+Snake gourd                        130.00           55.00
+Green Chilli                       170.00          175.00
+Lime                               320.00          390.00
 
 
 Retail Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
-Beans                              130.00             N/A          300.00
-Carrot                             380.00             N/A          360.00
-Cabbage                            200.00             N/A          400.00
-Tomato                             150.00             N/A          200.00
-Brinjal                            200.00             N/A          320.00
-Pumpkin                            200.00             N/A          280.00
-Snake gourd                        180.00             N/A          320.00
-Green Chilli                       220.00             N/A          400.00
-Lime                               380.00             N/A          600.00
+Beans                              130.00           95.00          300.00
+Carrot                             380.00          340.00          360.00
+Cabbage                            200.00          130.00          400.00
+Tomato                             150.00          105.00          200.00
+Brinjal                            200.00          140.00          320.00
+Pumpkin                            200.00          175.00          280.00
+Snake gourd                        180.00           85.00          320.00
+Green Chilli                       220.00          205.00          400.00
+Lime                               380.00          420.00          600.00
 
 --------------------------------------------------------------------------------
 
@@ -43,13 +43,14 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
-Red Onion (Local)                  270.00             N/A
-Red Onion (lmp)                    234.00             N/A
-Big Onion (Imp)                    483.00             N/A
-Potato (Local)                     323.00             N/A
-Potato (Imp)                       152.00             N/A
-Dried Chilli (Imp)                 700.00             N/A
-Coconut (Avg.)                      93.00             N/A
+Red Onion (Local)                  270.00          225.00
+Red Onion (lmp)                    234.00          245.00
+Big Onion (Local)                     N/A             N/A
+Big Onion (Imp)                    483.00          275.00
+Potato (Local)                     323.00          245.00
+Potato (Imp)                       152.00          145.00
+Dried Chilli (Imp)                 700.00          655.00
+Coconut (Avg.)                      93.00           85.00
 Coconut oil                        542.00             N/A
 Red Dhal                           285.00             N/A
 Sugar (White)                      258.00             N/A
@@ -62,13 +63,14 @@ Retail Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
-Red Onion (Local)                     N/A             N/A             N/A
-Red Onion (lmp)                    250.00             N/A          480.00
-Big Onion (Imp)                    580.00             N/A          500.00
-Potato (Local)                     380.00             N/A          360.00
-Potato (Imp)                       200.00             N/A          220.00
-Dried Chilli (Imp)                 850.00             N/A        1,000.00
-Coconut (Avg.)                     120.00             N/A          120.00
+Red Onion (Local)                     N/A          245.00             N/A
+Red Onion (lmp)                    250.00          265.00          480.00
+Big Onion (Local)                     N/A             N/A             N/A
+Big Onion (Imp)                    580.00          295.00          500.00
+Potato (Local)                     380.00          265.00          360.00
+Potato (Imp)                       200.00          165.00          220.00
+Dried Chilli (Imp)                 850.00          685.00        1,000.00
+Coconut (Avg.)                     120.00           90.00          120.00
 Coconut oil                        560.00             N/A          593.00
 Red Dhal                           300.00             N/A          320.00
 Sugar (White)                      270.00             N/A          270.00
@@ -85,9 +87,9 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
-Banana (Sour)                      140.00             N/A
-Papaw                              220.00             N/A
-Pineapple                             N/A             N/A
+Banana (Sour)                      140.00          120.00
+Papaw                              220.00          120.00
+Pineapple                             N/A          490.00
 Apple (Imp)                           N/A             N/A
 Orange (Imp)                          N/A             N/A
 
@@ -96,9 +98,9 @@ Retail Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
-Banana (Sour)                      180.00             N/A          200.00
-Papaw                              270.00             N/A          280.00
-Pineapple                          375.00             N/A          700.00
+Banana (Sour)                      180.00          150.00          200.00
+Papaw                              270.00          150.00          280.00
+Pineapple                          375.00          520.00          700.00
 Apple (Imp)                        185.00             N/A          250.00
 Orange (Imp)                       170.00             N/A          250.00
 
@@ -111,11 +113,13 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah      Marandagahamula
 --------------------------------------------------------------------------------
-Samba                              235.00                  N/A
-Nadu                               203.00                  N/A
-Kekulu (White)                     195.00                  N/A
-Kekulu (Red)                       178.00                  N/A
+Samba                              235.00               228.00
+Nadu                               203.00               198.00
+Kekulu (White)                     195.00               193.00
+Kekulu (Red)                       178.00               166.00
 Ponni Samba (Imp)                  253.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -123,10 +127,12 @@ Retail Prices (Rs./kg):
 Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
 Samba                              250.00             N/A             N/A
-Nadu                               220.00             N/A          220.00
-Kekulu (White)                     210.00             N/A          210.00
-Kekulu (Red)                       200.00             N/A          175.00
+Nadu                               220.00          212.00          220.00
+Kekulu (White)                     210.00          195.00          210.00
+Kekulu (Red)                       200.00          185.00          175.00
 Ponni Samba (Imp)                  270.00             N/A          270.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 
@@ -137,26 +143,26 @@ Wholesale Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                           Peliyagoda         Negombo
 --------------------------------------------------------------------------------
-Kelawalla                        1,200.00             N/A
-Thalapath                        1,700.00             N/A
+Kelawalla                        1,200.00          800.00
+Thalapath                        1,700.00        1,350.00
 Balaya                             700.00             N/A
-Paraw                            1,200.00             N/A
-Salaya                             400.00             N/A
-Hurulla                            650.00             N/A
-Linna                              600.00             N/A
+Paraw                            1,200.00        1,200.00
+Salaya                             400.00          350.00
+Hurulla                            650.00          650.00
+Linna                              600.00          600.00
 
 
 Retail Prices (Rs./kg):
 --------------------------------------------------------------------------------
 Item                               Pettah         Negombo     Narahenpita
 --------------------------------------------------------------------------------
-Kelawalla                             N/A             N/A        1,980.00
-Thalapath                             N/A             N/A        2,200.00
+Kelawalla                             N/A        1,320.00        1,980.00
+Thalapath                             N/A        1,680.00        2,200.00
 Balaya                                N/A             N/A          880.00
-Paraw                                 N/A             N/A             N/A
-Salaya                                N/A             N/A             N/A
-Hurulla                               N/A             N/A          800.00
-Linna                                 N/A             N/A          840.00
+Paraw                                 N/A        2,100.00             N/A
+Salaya                                N/A          480.00             N/A
+Hurulla                               N/A          850.00          800.00
+Linna                                 N/A          780.00          840.00
 
 --------------------------------------------------------------------------------
 

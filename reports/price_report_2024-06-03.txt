@@ -45,6 +45,7 @@ Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
 Red Onion (Local)                  390.00          300.00
 Red Onion (lmp)                    367.00          345.00
+Big Onion (Local)                     N/A             N/A
 Big Onion (Imp)                    175.00          240.00
 Potato (Local)                     290.00          240.00
 Potato (Imp)                       175.00          175.00
@@ -64,6 +65,7 @@ Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
 Red Onion (Local)                     N/A          320.00             N/A
 Red Onion (lmp)                    420.00          365.00          400.00
+Big Onion (Local)                     N/A             N/A             N/A
 Big Onion (Imp)                    200.00          260.00          220.00
 Potato (Local)                     380.00          260.00          320.00
 Potato (Imp)                       200.00          195.00          200.00
@@ -116,6 +118,8 @@ Nadu                               208.00               208.00
 Kekulu (White)                     202.00               199.00
 Kekulu (Red)                       183.00               186.00
 Ponni Samba (Imp)                  263.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -127,6 +131,8 @@ Nadu                               220.00          220.00          220.00
 Kekulu (White)                     210.00          203.00          210.00
 Kekulu (Red)                       200.00          195.00          200.00
 Ponni Samba (Imp)                  270.00             N/A          280.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 
@@ -142,6 +148,7 @@ Thalapath                             N/A             N/A
 Balaya                           1,400.00             N/A
 Paraw                                 N/A             N/A
 Salaya                             600.00          530.00
+Hurulla                               N/A             N/A
 Linna                                 N/A        1,130.00
 
 
@@ -154,6 +161,7 @@ Thalapath                             N/A             N/A             N/A
 Balaya                                N/A             N/A        1,440.00
 Paraw                                 N/A             N/A        1,950.00
 Salaya                                N/A          640.00          740.00
+Hurulla                               N/A             N/A             N/A
 Linna                                 N/A        1,280.00             N/A
 
 --------------------------------------------------------------------------------

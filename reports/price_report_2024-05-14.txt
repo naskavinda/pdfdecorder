@@ -45,6 +45,7 @@ Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
 Red Onion (Local)                  320.00          275.00
 Red Onion (lmp)                    263.00          245.00
+Big Onion (Local)                     N/A             N/A
 Big Onion (Imp)                    117.00          155.00
 Potato (Local)                     243.00          215.00
 Potato (Imp)                       152.00          165.00
@@ -64,6 +65,7 @@ Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
 Red Onion (Local)                  350.00          295.00             N/A
 Red Onion (lmp)                       N/A          265.00          400.00
+Big Onion (Local)                     N/A             N/A             N/A
 Big Onion (Imp)                    157.00          175.00          280.00
 Potato (Local)                     300.00          235.00          330.00
 Potato (Imp)                       180.00          185.00          200.00
@@ -116,6 +118,8 @@ Nadu                               208.00               203.00
 Kekulu (White)                     205.00               199.00
 Kekulu (Red)                       185.00               186.00
 Ponni Samba (Imp)                  260.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -127,6 +131,8 @@ Nadu                               220.00          215.00          220.00
 Kekulu (White)                     210.00          205.00          210.00
 Kekulu (Red)                       200.00          195.00          200.00
 Ponni Samba (Imp)                  270.00             N/A          280.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 
@@ -140,6 +146,7 @@ Item                           Peliyagoda         Negombo
 Kelawalla                        1,600.00        1,150.00
 Thalapath                        2,000.00        1,600.00
 Balaya                           1,200.00             N/A
+Paraw                                 N/A             N/A
 Salaya                             650.00          520.00
 Hurulla                            950.00          900.00
 Linna                              850.00          850.00
@@ -152,6 +159,7 @@ Item                               Pettah         Negombo     Narahenpita
 Kelawalla                             N/A        1,660.00        2,260.00
 Thalapath                             N/A        2,000.00        2,300.00
 Balaya                                N/A             N/A        1,400.00
+Paraw                                 N/A             N/A             N/A
 Salaya                                N/A          650.00          780.00
 Hurulla                               N/A        1,080.00        1,160.00
 Linna                                 N/A          990.00          980.00

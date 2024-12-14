@@ -44,6 +44,7 @@ Wholesale Prices (Rs./kg):
 Item                               Pettah        Dambulla
 --------------------------------------------------------------------------------
 Red Onion (Local)                  275.00          175.00
+Red Onion (lmp)                       N/A             N/A
 Big Onion (Local)                     N/A          235.00
 Big Onion (Imp)                    222.00          245.00
 Potato (Local)                     360.00          255.00
@@ -63,6 +64,7 @@ Retail Prices (Rs./kg):
 Item                               Pettah        Dambulla     Narahenpita
 --------------------------------------------------------------------------------
 Red Onion (Local)                  350.00          195.00          480.00
+Red Onion (lmp)                       N/A             N/A             N/A
 Big Onion (Local)                     N/A          255.00             N/A
 Big Onion (Imp)                    260.00          265.00          280.00
 Potato (Local)                     400.00          275.00          560.00
@@ -116,6 +118,8 @@ Nadu                               210.00               208.00
 Kekulu (White)                     208.00               199.00
 Kekulu (Red)                       205.00               195.00
 Ponni Samba (Imp)                  273.00                  N/A
+Nadu (Imp)                            N/A                  N/A
+Kekulu (White) (Imp)                  N/A                  N/A
 
 
 Retail Prices (Rs./kg):
@@ -127,6 +131,8 @@ Nadu                               220.00          215.00          220.00
 Kekulu (White)                     210.00          205.00          210.00
 Kekulu (Red)                       210.00          205.00          210.00
 Ponni Samba (Imp)                  280.00             N/A          300.00
+Nadu (Imp)                            N/A             N/A             N/A
+Kekulu (White) (Imp)                  N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 

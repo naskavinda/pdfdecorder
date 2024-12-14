@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 # MongoDB connection
 client = MongoClient("mongodb://root:secret@localhost:27017/")
-db = client["central_bank"]
+db = client["central_bank_test"]
 collection = db["row_data"]
 
 should_process_pdf = None
@@ -47,9 +47,10 @@ ORDER_VALUES = {
     "O_16_1": [3, 4, 5, 7, 8, 9, 10, 11, 13, 15],
     "O_16_2": [3, 5, 6, 8, 10, 11, 12, 13, 14, 15],
 
-    "O_17_1": [3, 5, 6, 8, 7, 10, 11, 12, 14, 16],
+    "O_17_1": [3, 5, 6, 8, 9, 10, 11, 12, 14, 16],
     "O_17_2": [2, 3, 4, 6, 7, 9, 11, 13, 14, 16],
     "O_17_3": [3, 4, 6, 8, 10, 11, 12, 14, 15, 16],
+    "O_17_4": [2, 3, 4, 7, 8, 9, 10, 12, 14, 16],
 
     "O_18_1": [2, 3, 4, 7, 9, 10, 11, 13, 15, 17],
     "O_18_2": [2, 3, 4, 7, 8, 9, 11, 13, 15, 17],
@@ -71,6 +72,8 @@ ORDER_VALUES = {
     "O_21_4": [2, 3, 4, 7, 10, 12, 14, 16, 18, 20],
     "O_21_5": [2, 3, 6, 8, 11, 13, 14, 16, 18, 20],
     "O_21_6": [3, 5, 6, 8, 11, 13, 15, 16, 18, 20],
+    "O_21_7": [3, 4, 7, 9, 12, 13, 15, 17, 19, 20],
+    "O_21_8": [3, 5, 6, 8, 11, 13, 14, 16, 18, 20],
 
     "O_22_1": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
     "O_22_2": [3, 5, 7, 10, 12, 13, 15, 17, 19, 21],
@@ -515,16 +518,16 @@ def extract_prices(row, key):
         if prices is None:
             print(f"Warning: Could not extract prices for key {key}")
             return ("N/A",) * 10  # Return N/A for all 10 price fields
-            
-        # should_process_pdf = "y" == "y"
-        if row[0] and row[0].strip() == "Beans":
-            if should_process_pdf is None:  # Only ask if we haven't decided yet
-                user_input = input(
-                    "\nFound 'Beans' in the data. Do you want to process this PDF? (y/n): "
-                )
-                should_process_pdf = user_input.lower() == "y"
-                if not should_process_pdf:
-                    return None  # Return None to indicate we should skip this PDF
+
+        should_process_pdf = "y" == "y"
+        # if row[0] and row[0].strip() == "Beans":
+        #     if should_process_pdf is None:  # Only ask if we haven't decided yet
+        #         user_input = input(
+        #             "\nFound 'Beans' in the data. Do you want to process this PDF? (y/n): "
+        #         )
+        #         should_process_pdf = user_input.lower() == "y"
+        #         if not should_process_pdf:
+        #             return None  # Return None to indicate we should skip this PDF
 
         return (
             prices[0],
@@ -544,6 +547,17 @@ def extract_prices(row, key):
         return ("N/A",) * 10  # Return N/A for all 10 price fields
 
 
+def detected_indexs(row):
+    print("Detected key:")
+    index_list = []
+    for i, cell in enumerate(row):
+        if not cell:
+            continue
+        if ".00" in cell or "n.a" in cell or "n.a." in cell:
+            index_list.append(i)
+    return index_list
+
+
 def get_order_key(row, is_monday_format):
     """
     Determine the key for ORDER_VALUES based on the format and row length.
@@ -561,6 +575,10 @@ def get_order_key(row, is_monday_format):
         if not cell:
             continue
         print(f"{str(i).rjust(2)} | {cell}")
+
+    index_list = detected_indexs(row)
+    print(f"Index list: {index_list}")
+
     key = f"M_{len(row)}" if is_monday_format else f"O_{len(row)}"
 
     if has_key_variants(key):
@@ -568,6 +586,9 @@ def get_order_key(row, is_monday_format):
         print(f"Variants for {key}: {variants}")
         for i, variant in enumerate(variants):
             print(f"{i + 1}: {ORDER_VALUES[variant]}")
+            if ORDER_VALUES[variant] == index_list:
+                print(f"Detected Variant: {variant}")
+                return variants[i]
         key = input(f"Choose a variant for {key}: ")
         return variants[int(key) - 1]
     return key
@@ -647,7 +668,7 @@ def process_table_data(table):
                         key_processed = True
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
+                    if prices is not None:  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "vegetables",
                             "item": item_name,
@@ -687,7 +708,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
+                    if prices is not None:  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "other",
                             "item": item_name,
@@ -727,7 +748,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
+                    if prices is not None:  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "fruits",
                             "item": item_name,
@@ -765,7 +786,7 @@ def process_table_data(table):
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
                     prices = extract_prices(row, key)
-                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
+                    if prices is not None:  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "rice",
                             "item": item_name,
@@ -802,8 +823,10 @@ def process_table_data(table):
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
+                    if "Price of Chinese variety".lower() in item_name.lower():
+                        continue
                     prices = extract_prices(row, key)
-                    if prices is not None and any(price != 'N/A' for price in prices):  # Only add if we have any non-N/A price data
+                    if (prices is not None):  # Only add if we have any non-N/A price data
                         data_item = {
                             "type": "fish",
                             "item": item_name,

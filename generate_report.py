@@ -4,7 +4,7 @@ import os
 
 # MongoDB connection
 client = MongoClient('mongodb://root:secret@localhost:27017/')
-db = client['central_bank']
+db = client['central_bank_test']
 
 def format_price(price):
     """Format price to proper format"""
