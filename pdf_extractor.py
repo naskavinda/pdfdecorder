@@ -884,7 +884,7 @@ def extract_pdf_data(pdf_path):
 
             # Try both patterns
             match = re.match(r"price_report_(\d{8})\.pdf", filename) or re.match(
-                r"price_report_(\d{8})_e\.pdf", filename
+                r"price_report_(\d{8})_e(?:_\d)?\.pdf", filename
             )
 
             if not match:
@@ -976,7 +976,7 @@ def main(specific_pdf=None):
     os.makedirs("data/processed", exist_ok=True)
 
     # Define the regex patterns for both PDF file formats
-    pattern = r"^price_report_\d{8}(?:_e)?\.pdf$"
+    pattern = r"^price_report_\d{8}(?:_e(?:_\d)?)?\.pdf$"
 
     if specific_pdf:
         # Process specific PDF file
