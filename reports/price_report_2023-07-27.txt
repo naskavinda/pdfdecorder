@@ -150,7 +150,6 @@ Paraw                            1,200.00        1,350.00
 Salaya                             580.00          500.00
 Hurulla                            650.00          850.00
 Linna                              760.00          740.00
-Price increased by mor              N/A             N/A
 
 
 Retail Prices (Rs./kg):
@@ -164,7 +163,6 @@ Paraw                                 N/A        2,170.00        1,980.00
 Salaya                                N/A          650.00          680.00
 Hurulla                               N/A        1,030.00          900.00
 Linna                                 N/A          920.00          880.00
-Price increased by mor              N/A             N/A             N/A
 
 --------------------------------------------------------------------------------
 

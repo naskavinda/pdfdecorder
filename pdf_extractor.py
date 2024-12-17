@@ -833,7 +833,10 @@ def process_table_data(table):
                 if item_name and item_name.lower() != "item":
                     print(f"\nProcessing row for item: {item_name}")
                     print(f"using key: {key}")
-                    if "Price of Chinese variety".lower() in item_name.lower():
+                    if (
+                        "Price of Chinese variety".lower() in item_name.lower()
+                        or "Price increased by mor".lower() in item_name.lower()
+                    ):
                         continue
                     prices = extract_prices(row, key)
                     if (prices is not None):  # Only add if we have any non-N/A price data
