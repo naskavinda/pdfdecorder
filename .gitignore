@@ -35,18 +35,9 @@ ENV/
 
 # Project specific
 data/*
-!data/processed/
 data/processed/*
-!data/processed/price_report_20241205_e.pdf
-!data/processed/price_report_20241204_e.pdf
-!data/processed/price_report_20241203_e.pdf
-!data/processed/price_report_20241209_e.pdf
 
 *.pdf
-!data/processed/price_report_20241205_e.pdf
-!data/processed/price_report_20241204_e.pdf
-!data/processed/price_report_20241203_e.pdf
-!data/processed/price_report_20241209_e.pdf
 *.csv
 *.xlsx
 
