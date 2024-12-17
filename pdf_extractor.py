@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 # MongoDB connection
 client = MongoClient("mongodb://root:secret@localhost:27017/")
-db = client["central_bank_test"]
+db = client["central_bank"]
 collection = db["row_data"]
 
 should_process_pdf = None
