@@ -38,6 +38,7 @@ data/*
 data/processed/*
 
 *.pdf
+!data/fail/*.pdf
 *.csv
 *.xlsx
 
