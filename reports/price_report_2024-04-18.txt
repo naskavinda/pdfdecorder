@@ -46,7 +46,7 @@ Item                               Pettah        Dambulla
 Red Onion (Local)                  343.00          315.00
 Red Onion (lmp)                    320.00          265.00
 Big Onion (Local)                     N/A             N/A
-Big Onion (Imp)                    478.00             N/A
+Big Onion (Imp)                    478.00          425.00
 Potato (Local)                     290.00             N/A
 Potato (Imp)                       148.00          138.00
 Dried Chilli (Imp)                 750.00          635.00

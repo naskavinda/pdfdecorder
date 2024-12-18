@@ -1,0 +1,163 @@
+Price Report for 2022-09-19 00:00:00
+============================================================
+
+
+VEGETABLES
+============================================================
+
+Wholesale Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla
+--------------------------------------------------------------------------------
+Beans                                 N/A             N/A
+Carrot                                N/A             N/A
+Cabbage                               N/A             N/A
+Tomato                                N/A             N/A
+Brinjal                               N/A             N/A
+Pumpkin                               N/A             N/A
+Snake gou                             N/A             N/A
+Green Ch                              N/A             N/A
+Lime                                  N/A             N/A
+
+
+Retail Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Beans                                 N/A             N/A             N/A
+Carrot                                N/A             N/A             N/A
+Cabbage                               N/A             N/A             N/A
+Tomato                                N/A             N/A             N/A
+Brinjal                               N/A             N/A             N/A
+Pumpkin                               N/A             N/A             N/A
+Snake gou                             N/A             N/A             N/A
+Green Ch                              N/A             N/A             N/A
+Lime                                  N/A             N/A             N/A
+
+--------------------------------------------------------------------------------
+
+OTHER
+============================================================
+
+Wholesale Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla
+--------------------------------------------------------------------------------
+Red Onio                              N/A             N/A
+Red Onio                              N/A             N/A
+Big Onion                             N/A             N/A
+Big Onion                             N/A             N/A
+Potato (Lo                            N/A             N/A
+Potato (Im                            N/A             N/A
+Dried Chi                             N/A             N/A
+Coconut (                             N/A             N/A
+Coconut o                             N/A             N/A
+Dhal                                  N/A             N/A
+Sugar (W                              N/A             N/A
+Egg (Whi                              N/A             N/A
+Katta                                 N/A             N/A
+Sprat (Im                             N/A             N/A
+
+
+Retail Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Red Onio                              N/A             N/A             N/A
+Red Onio                              N/A             N/A             N/A
+Big Onion                             N/A             N/A             N/A
+Big Onion                             N/A             N/A             N/A
+Potato (Lo                            N/A             N/A             N/A
+Potato (Im                            N/A             N/A             N/A
+Dried Chi                             N/A             N/A             N/A
+Coconut (                             N/A             N/A             N/A
+Coconut o                             N/A             N/A             N/A
+Dhal                                  N/A             N/A             N/A
+Sugar (W                              N/A             N/A             N/A
+Egg (Whi                              N/A             N/A             N/A
+Katta                                 N/A             N/A             N/A
+Sprat (Im                             N/A             N/A             N/A
+
+--------------------------------------------------------------------------------
+
+FRUITS
+============================================================
+
+Wholesale Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla
+--------------------------------------------------------------------------------
+Papaw                                 N/A             N/A
+Pineapple                             N/A             N/A
+Apple (Im                             N/A             N/A
+Orange (I                             N/A             N/A
+
+
+Retail Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Papaw                                 N/A             N/A             N/A
+Pineapple                          350.00             N/A             N/A
+Apple (Im                             N/A             N/A             N/A
+Orange (I                             N/A             N/A             N/A
+
+--------------------------------------------------------------------------------
+
+RICE
+============================================================
+
+Wholesale Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah      Marandagahamula
+--------------------------------------------------------------------------------
+Nadu                                  N/A                  N/A
+Kekulu (W                             N/A                  N/A
+Kekulu (R                             N/A                  N/A
+Ponni Sa                              N/A                  N/A
+Nadu (Im                              N/A                  N/A
+Kekulu (W                             N/A                  N/A
+
+
+Retail Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah        Dambulla     Narahenpita
+--------------------------------------------------------------------------------
+Nadu                                  N/A             N/A             N/A
+Kekulu (W                             N/A             N/A             N/A
+Kekulu (R                             N/A             N/A             N/A
+Ponni Sa                              N/A             N/A             N/A
+Nadu (Im                              N/A             N/A             N/A
+Kekulu (W                             N/A             N/A             N/A
+
+--------------------------------------------------------------------------------
+
+FISH
+============================================================
+
+Wholesale Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                           Peliyagoda         Negombo
+--------------------------------------------------------------------------------
+Thalapath                             N/A             N/A
+Balaya                                N/A             N/A
+Paraw                                 N/A        1,350.00
+Salaya                                N/A             N/A
+Hurulla                               N/A             N/A
+Linna                                 N/A             N/A
+
+
+Retail Prices (Rs./kg):
+--------------------------------------------------------------------------------
+Item                               Pettah         Negombo     Narahenpita
+--------------------------------------------------------------------------------
+Thalapath                             N/A             N/A             N/A
+Balaya                                N/A             N/A             N/A
+Paraw                                 N/A        1,990.00             N/A
+Salaya                                N/A             N/A             N/A
+Hurulla                               N/A             N/A             N/A
+Linna                                 N/A             N/A             N/A
+
+--------------------------------------------------------------------------------
+
+Note: All prices are in Sri Lankan Rupees (Rs.)

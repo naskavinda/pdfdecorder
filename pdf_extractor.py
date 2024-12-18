@@ -11,19 +11,27 @@ db = client["central_bank"]
 collection = db["row_data"]
 
 should_process_pdf = None
+pdf_file = None  # Global variable to store the PDF file handle
 
 # Dictionary to store order values
 
 ORDER_VALUES = {
-    "M_13": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
+    "M_13_1": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
+    "M_13_2": [2, 3, 4, 5, 7, 8, 9, 10, 11, 12],
     # M 14
     "M_14_1": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
     "M_14_2": [2, 3, 4, 7, 8, 9, 10, 11, 12, 13],
     "M_14_3": [2, 4, 5, 7, 8, 9, 10, 11, 12, 13],
+    "M_14_4": [2, 3, 4, 5, 6, 8, 9, 11, 12, 13],
+    "M_14_5": [2, 3, 4, 5, 8, 9, 10, 11, 12, 13],
     # M 15
-    "M_15": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
+    "M_15_1": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
+    "M_15_2": [2, 3, 4, 5, 7, 9, 10, 12, 13, 14],
+    "M_15_3": [2, 4, 5, 8, 9, 10, 11, 12, 13, 14],
     # M 16
-    "M_16": [2, 4, 5, 8, 10, 11, 12, 13, 14, 15],
+    "M_16_1": [2, 4, 5, 8, 10, 11, 12, 13, 14, 15],
+    "M_16_2": [4, 5, 6, 7, 10, 11, 12, 13, 14, 15],
+    "M_16_3": [2, 3, 5, 8, 10, 11, 12, 13, 14, 15],
     # M 18
     "M_18": [3, 5, 6, 8, 9, 10, 12, 13, 15, 17],
     # M 19
@@ -31,9 +39,18 @@ ORDER_VALUES = {
     # M 20
     "M_20_1": [3, 5, 7, 9, 11, 12, 14, 15, 17, 19],
     "M_20_2": [2, 5, 6, 9, 11, 12, 14, 15, 17, 19],
+    "M_20_3": [3, 5, 6, 8, 10, 11, 13, 15, 17, 19],
     # M 21
     "M_21_1": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
     "M_21_2": [3, 5, 6, 8, 11, 13, 15, 16, 18, 20],
+    "M_21_3": [3, 5, 6, 8, 11, 13, 14, 16, 18, 20],
+    "M_21_4": [3, 5, 6, 8, 10, 12, 14, 16, 18, 20],
+    # M 22
+    "M_22_1": [3, 5, 7, 9, 11, 13, 15, 17, 19, 21],
+    "M_22_2": [3, 5, 6, 8, 11, 13, 15, 17, 19, 21],
+    "M_22_3": [2, 5, 6, 9, 12, 13, 15, 17, 19, 21],
+    # M 24
+    "M_24": [2, 5, 7, 10, 13, 15, 17, 19, 21, 23],
     # O 13
     "O_13_1": [2, 3, 4, 6, 7, 8, 9, 10, 11, 12],
     "O_13_2": [2, 3, 4, 5, 7, 8, 9, 10, 11, 12],
@@ -41,10 +58,15 @@ ORDER_VALUES = {
     "O_14_1": [2, 3, 4, 6, 8, 9, 10, 11, 12, 13],
     "O_14_2": [2, 3, 4, 7, 8, 9, 10, 11, 12, 13],
     "O_14_3": [2, 4, 5, 7, 8, 9, 10, 11, 12, 13],
+    "O_14_4": [2, 3, 4, 5, 6, 8, 9, 11, 12, 13],
+    "O_14_5": [2, 4, 5, 6, 8, 9, 10, 11, 12, 13],
+    "O_14_6": [2, 3, 4, 5, 8, 9, 10, 11, 12, 13],
     # O 15
     "O_15_1": [2, 3, 4, 6, 7, 8, 9, 10, 12, 14],
     "O_15_2": [2, 3, 4, 7, 9, 10, 11, 12, 13, 14],
     "O_15_3": [2, 3, 4, 6, 9, 10, 11, 12, 13, 14],
+    "O_15_4": [2, 3, 4, 6, 7, 9, 10, 12, 13, 14],
+    "O_15_5": [4, 5, 6, 7, 9, 10, 11, 12, 13, 14],
     # O 16
     "O_16_1": [3, 4, 5, 7, 8, 9, 10, 11, 13, 15],
     "O_16_2": [3, 5, 6, 8, 10, 11, 12, 13, 14, 15],
@@ -53,6 +75,8 @@ ORDER_VALUES = {
     "O_17_2": [2, 3, 4, 6, 7, 9, 11, 13, 14, 16],
     "O_17_3": [3, 4, 6, 8, 10, 11, 12, 14, 15, 16],
     "O_17_4": [2, 3, 4, 7, 8, 9, 10, 12, 14, 16],
+    "O_17_5": [2, 4, 5, 7, 8, 10, 11, 13, 14, 16],
+    "O_17_6": [4, 5, 6, 8, 9, 11, 12, 14, 15, 16],
     # O 18
     "O_18_1": [2, 3, 4, 7, 9, 10, 11, 13, 15, 17],
     "O_18_2": [2, 3, 4, 7, 8, 9, 11, 13, 15, 17],
@@ -72,6 +96,10 @@ ORDER_VALUES = {
     "O_20_5": [2, 3, 5, 7, 9, 11, 13, 15, 17, 19],
     "O_20_6": [2, 3, 4, 6, 9, 11, 13, 15, 17, 19],
     "O_20_7": [3, 4, 5, 7, 9, 11, 13, 15, 17, 19],
+    "O_20_8": [3, 5, 6, 8, 10, 12, 13, 15, 17, 19],
+    "O_20_9": [3, 5, 6, 8, 10, 11, 13, 15, 17, 19],
+    "O_20_10": [3, 5, 6, 8, 11, 12, 13, 15, 17, 19],
+    "O_20_11": [3, 4, 5, 7, 10, 11, 13, 15, 17, 19],
     # O 21
     "O_21_1": [3, 4, 7, 9, 12, 14, 15, 17, 19, 20],
     "O_21_2": [2, 3, 5, 8, 10, 12, 14, 16, 18, 20],
@@ -83,12 +111,28 @@ ORDER_VALUES = {
     "O_21_8": [3, 5, 6, 8, 11, 13, 14, 16, 18, 20],
     "O_21_9": [3, 4, 6, 8, 10, 12, 14, 16, 18, 20],
     "O_21_10": [3, 4, 6, 8, 11, 12, 14, 16, 18, 20],
+    "O_21_11": [3, 5, 7, 9, 11, 13, 15, 16, 18, 20],
+    "O_21_12": [3, 5, 6, 8, 10, 12, 14, 16, 18, 20],
+    "O_21_13": [3, 5, 7, 9, 11, 12, 14, 16, 18, 20],
+    "O_21_14": [3, 5, 7, 9, 12, 13, 15, 16, 18, 20],
     # O 22
     "O_22_1": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
     "O_22_2": [3, 5, 7, 10, 12, 13, 15, 17, 19, 21],
     "O_22_3": [2, 3, 5, 9, 11, 13, 15, 17, 19, 21],
     "O_22_4": [3, 4, 6, 8, 11, 13, 15, 17, 19, 21],
+    "O_22_5": [3, 5, 7, 9, 11, 13, 15, 17, 19, 21],
+    "O_22_6": [3, 5, 7, 9, 12, 14, 16, 17, 19, 21],
+    "O_22_7": [3, 5, 6, 8, 11, 13, 15, 17, 19, 21],
+    "O_22_8": [3, 5, 7, 9, 12, 13, 15, 17, 19, 21],
+    # O 23
+    "O_23_1": [3, 5, 7, 9, 12, 14, 16, 18, 20, 22],
+    "O_23_2": [3, 5, 7, 10, 12, 14, 16, 18, 20, 22],
 }
+
+
+class PriceCleaningError(Exception):
+    """Custom exception for price cleaning errors"""
+    pass
 
 
 def safe_get_price(cell):
@@ -395,6 +439,7 @@ def clean_price(row, index):
     Clean and convert price string to float.
     Returns "N/A" for null or invalid values.
     """
+    global current_pdf_path, pdf_file
     price_str = row[index]
     try:
         if (
@@ -413,7 +458,6 @@ def clean_price(row, index):
             return "N/A"
 
         # If the price starts with a comma, add a leading digit
-        # if price_str.startswith(',') and index > 1:
         if index == 2 and " " in row[1]:
             price_str = row[1].split(" ")[1] + price_str
         if index > 2:
@@ -421,15 +465,41 @@ def clean_price(row, index):
                 price_str = row[index - 1].split(".00")[1] + price_str
             else:
                 price_str = row[index - 1] + price_str
-        # Now convert to float, after removing the comma
-        float_value = float(
-            price_str.replace(",", "").replace(" ", "").replace("n.a.", "")
+        # Now convert to float, after removing the comma and cleaning special characters
+        price_str = (
+            price_str.replace(",", "")
+            .replace(" ", "")
+            .replace("n.a.", "")
+            .replace("(a", "")
+            .replace("a)", "")
+            .replace(")", "")
+            .replace("(", "")
         )
+        float_value = float(price_str)
         returnValue = str(float_value) if float_value else "N/A"
         return returnValue
     except Exception as e:
         print(f"Error cleaning price {price_str}: {str(e)}")
-        return "N/A"
+        if current_pdf_path:
+            # Create fail directory if it doesn't exist
+            fail_dir = os.path.join("data", "fail")
+            os.makedirs(fail_dir, exist_ok=True)
+            
+            # Move the problematic PDF to fail directory
+            filename = os.path.basename(current_pdf_path)
+            fail_path = os.path.join(fail_dir, filename)
+            try:
+                # Close the PDF file if it's open
+                if pdf_file:
+                    pdf_file.close()
+                    pdf_file = None
+                os.rename(current_pdf_path, fail_path)
+                print(f"Moved problematic PDF to {fail_path}")
+            except Exception as move_error:
+                print(f"Error moving PDF to fail directory: {str(move_error)}")
+        
+        # Raise custom exception to be caught by extract_pdf_data
+        raise PriceCleaningError(f"Failed to clean price: {str(e)}")
 
 
 def extract_price_pair(row, yesterday_index, today_index):
@@ -523,7 +593,7 @@ def extract_prices(row, key):
         # For Monday reports, the indices are different due to "Last Friday" format
         print(f"Using key: {key}")
         prices = extract_row_data(row, key)
-        
+
         # Check if prices is None before proceeding
         if prices is None:
             print(f"Warning: Could not extract prices for key {key}")
@@ -601,7 +671,15 @@ def get_order_key(row, is_monday_format):
                 return variants[i]
         key = input(f"Choose a variant for {key}: ")
         return variants[int(key) - 1]
-    return key
+    else:
+        print(f"Detected list: {ORDER_VALUES[key]}")
+        if ORDER_VALUES[key] == index_list:
+            print(f"Detected Variant: {key}")
+            return key
+        else:
+            print('Variant not detected')
+            key = input(f"Choose a variant for {key}: ")
+            return key
 
 
 def process_table_data(table):
@@ -620,7 +698,11 @@ def process_table_data(table):
 
     # First find the header row with "WHOLESALE"
     for idx, row in enumerate(table):
-        if row and any("WHOLESALE" in str(cell).upper() for cell in row):
+        print(f"Row {idx}: {row}")
+        if row and (
+            any("WHOLESALE" in str(cell).upper() for cell in row)
+            or any("WHOLE" in str(cell).upper() for cell in row)
+        ):
             header_row_idx = idx
             break
 
@@ -666,206 +748,212 @@ def process_table_data(table):
     key = ""
     key_processed = False
     # Process vegetables section
-    veg_start_idx, veg_end_idx = find_section_boundaries(table, header_row_idx)
-    if veg_start_idx is not None and veg_end_idx is not None:
-        for row in table[veg_start_idx:veg_end_idx]:
-            if row and any(row):  # Skip empty rows
-                item_name = str(row[0]).strip() if row[0] else ""
-                if item_name and item_name.lower() != "item":
-                    print(f"\nProcessing row for item: {item_name}")
-                    if not key_processed:
-                        key = get_order_key(row, is_monday_format)
-                        key_processed = True
-                    print(f"using key: {key}")
-                    prices = extract_prices(row, key)
-                    if prices is not None:  # Only add if we have any non-N/A price data
-                        data_item = {
-                            "type": "vegetables",
-                            "item": item_name,
-                            "pettah_wholesale": {
-                                "yesterday": prices[0],
-                                "today": prices[1],
-                            },
-                            "dambulla_wholesale": {
-                                "yesterday": prices[2],
-                                "today": prices[3],
-                            },
-                            "pettah_retail": {
-                                "yesterday": prices[4],
-                                "today": prices[5],
-                            },
-                            "dambulla_retail": {
-                                "yesterday": prices[6],
-                                "today": prices[7],
-                            },
-                            "narahenpita_retail": {
-                                "yesterday": prices[8],
-                                "today": prices[9],
-                            },
-                            "timestamp": datetime.now(),
-                        }
-                        all_data.append(data_item)
+    vegetables_start, vegetables_end = find_section_boundaries(table, header_row_idx)
+    if vegetables_start and vegetables_end:
+        print("\nProcessing vegetables section...")
+        for row in table[vegetables_start:vegetables_end]:
+            item_name = row[0] if row and len(row) > 0 else None
+            if item_name and item_name.lower() != "item":
+                print(f"\nProcessing row for item: {item_name}")
+                # Skip rows with Chinese variety or increased price notes
+                if any(skip_text.lower() in item_name.lower() for skip_text in [
+                    "Price of Chinese variety",
+                    "Price increased by",
+                    "(a)",
+                    "(b)",
+                    "(c)"
+                ]):
+                    print(f"Skipping row: {item_name}")
+                    continue
+                if not key_processed:
+                    key = get_order_key(row, is_monday_format)
+                    key_processed = True
+                print(f"using key: {key}")
+                prices = extract_prices(row, key)
+                if prices is not None:  # Only add if we have any non-N/A price data
+                    data_item = {
+                        "type": "vegetables",
+                        "item": item_name,
+                        "pettah_wholesale": {
+                            "yesterday": prices[0],
+                            "today": prices[1],
+                        },
+                        "dambulla_wholesale": {
+                            "yesterday": prices[2],
+                            "today": prices[3],
+                        },
+                        "pettah_retail": {
+                            "yesterday": prices[4],
+                            "today": prices[5],
+                        },
+                        "dambulla_retail": {
+                            "yesterday": prices[6],
+                            "today": prices[7],
+                        },
+                        "narahenpita_retail": {
+                            "yesterday": prices[8],
+                            "today": prices[9],
+                        },
+                        "timestamp": datetime.now(),
+                    }
+                    all_data.append(data_item)
 
     # Process other section with the same format changes
-    other_start_idx, other_end_idx = find_other_section_boundaries(
-        table, header_row_idx
-    )
-    if other_start_idx is not None and other_end_idx is not None:
-        for row in table[other_start_idx:other_end_idx]:
-            if row and any(row):  # Skip empty rows
-                item_name = str(row[0]).strip() if row[0] else ""
-                if item_name and item_name.lower() != "item":
-                    print(f"\nProcessing row for item: {item_name}")
-                    print(f"using key: {key}")
-                    prices = extract_prices(row, key)
-                    if prices is not None:  # Only add if we have any non-N/A price data
-                        data_item = {
-                            "type": "other",
-                            "item": item_name,
-                            "pettah_wholesale": {
-                                "yesterday": prices[0],
-                                "today": prices[1],
-                            },
-                            "dambulla_wholesale": {
-                                "yesterday": prices[2],
-                                "today": prices[3],
-                            },
-                            "pettah_retail": {
-                                "yesterday": prices[4],
-                                "today": prices[5],
-                            },
-                            "dambulla_retail": {
-                                "yesterday": prices[6],
-                                "today": prices[7],
-                            },
-                            "narahenpita_retail": {
-                                "yesterday": prices[8],
-                                "today": prices[9],
-                            },
-                            "timestamp": datetime.now(),
-                        }
-                        all_data.append(data_item)
+    other_start, other_end = find_other_section_boundaries(table, header_row_idx)
+    if other_start and other_end:
+        print("\nProcessing other section...")
+        for row in table[other_start:other_end]:
+            item_name = row[0] if row and len(row) > 0 else None
+            if item_name and item_name.lower() != "item":
+                print(f"\nProcessing row for item: {item_name}")
+                print(f"using key: {key}")
+                prices = extract_prices(row, key)
+                if prices is not None:  # Only add if we have any non-N/A price data
+                    data_item = {
+                        "type": "other",
+                        "item": item_name,
+                        "pettah_wholesale": {
+                            "yesterday": prices[0],
+                            "today": prices[1],
+                        },
+                        "dambulla_wholesale": {
+                            "yesterday": prices[2],
+                            "today": prices[3],
+                        },
+                        "pettah_retail": {
+                            "yesterday": prices[4],
+                            "today": prices[5],
+                        },
+                        "dambulla_retail": {
+                            "yesterday": prices[6],
+                            "today": prices[7],
+                        },
+                        "narahenpita_retail": {
+                            "yesterday": prices[8],
+                            "today": prices[9],
+                        },
+                        "timestamp": datetime.now(),
+                    }
+                    all_data.append(data_item)
 
     # Process fruits section
-    fruits_start_idx, fruits_end_idx = find_fruits_section_boundaries(
-        table, header_row_idx
-    )
-    if fruits_start_idx is not None and fruits_end_idx is not None:
-        for row in table[fruits_start_idx:fruits_end_idx]:
-            if row and any(row):  # Skip empty rows
-                item_name = str(row[0]).strip() if row[0] else ""
-                if item_name and item_name.lower() != "item":
-                    print(f"\nProcessing row for item: {item_name}")
-                    print(f"using key: {key}")
-                    prices = extract_prices(row, key)
-                    if prices is not None:  # Only add if we have any non-N/A price data
-                        data_item = {
-                            "type": "fruits",
-                            "item": item_name,
-                            "pettah_wholesale": {
-                                "yesterday": prices[0],
-                                "today": prices[1],
-                            },
-                            "dambulla_wholesale": {
-                                "yesterday": prices[2],
-                                "today": prices[3],
-                            },
-                            "pettah_retail": {
-                                "yesterday": prices[4],
-                                "today": prices[5],
-                            },
-                            "dambulla_retail": {
-                                "yesterday": prices[6],
-                                "today": prices[7],
-                            },
-                            "narahenpita_retail": {
-                                "yesterday": prices[8],
-                                "today": prices[9],
-                            },
-                            "timestamp": datetime.now(),
-                        }
-                        all_data.append(data_item)
+    fruits_start, fruits_end = find_fruits_section_boundaries(table, header_row_idx)
+    if fruits_start and fruits_end:
+        print("\nProcessing fruits section...")
+        for row in table[fruits_start:fruits_end]:
+            item_name = row[0] if row and len(row) > 0 else None
+            if item_name and item_name.lower() != "item":
+                print(f"\nProcessing row for item: {item_name}")
+                print(f"using key: {key}")
+                prices = extract_prices(row, key)
+                if prices is not None:  # Only add if we have any non-N/A price data
+                    data_item = {
+                        "type": "fruits",
+                        "item": item_name,
+                        "pettah_wholesale": {
+                            "yesterday": prices[0],
+                            "today": prices[1],
+                        },
+                        "dambulla_wholesale": {
+                            "yesterday": prices[2],
+                            "today": prices[3],
+                        },
+                        "pettah_retail": {
+                            "yesterday": prices[4],
+                            "today": prices[5],
+                        },
+                        "dambulla_retail": {
+                            "yesterday": prices[6],
+                            "today": prices[7],
+                        },
+                        "narahenpita_retail": {
+                            "yesterday": prices[8],
+                            "today": prices[9],
+                        },
+                        "timestamp": datetime.now(),
+                    }
+                    all_data.append(data_item)
 
     # Process rice section
-    rice_start_idx, rice_end_idx = find_rice_section_boundaries(table, header_row_idx)
-    if rice_start_idx is not None and rice_end_idx is not None:
-        for row in table[rice_start_idx:rice_end_idx]:
-            if row and any(row):  # Skip empty rows
-                item_name = str(row[0]).strip() if row[0] else ""
-                if item_name and item_name.lower() != "item":
-                    print(f"\nProcessing row for item: {item_name}")
-                    print(f"using key: {key}")
-                    prices = extract_prices(row, key)
-                    if prices is not None:  # Only add if we have any non-N/A price data
-                        data_item = {
-                            "type": "rice",
-                            "item": item_name,
-                            "pettah_wholesale": {
-                                "yesterday": prices[0],
-                                "today": prices[1],
-                            },
-                            "marandagahamula_wholesale": {
-                                "yesterday": prices[2],
-                                "today": prices[3],
-                            },
-                            "pettah_retail": {
-                                "yesterday": prices[4],
-                                "today": prices[5],
-                            },
-                            "dambulla_retail": {
-                                "yesterday": prices[6],
-                                "today": prices[7],
-                            },
-                            "narahenpita_retail": {
-                                "yesterday": prices[8],
-                                "today": prices[9],
-                            },
-                            "timestamp": datetime.now(),
-                        }
-                        all_data.append(data_item)
+    rice_start, rice_end = find_rice_section_boundaries(table, header_row_idx)
+    if rice_start and rice_end:
+        print("\nProcessing rice section...")
+        for row in table[rice_start:rice_end]:
+            item_name = row[0] if row and len(row) > 0 else None
+            if item_name and item_name.lower() != "item":
+                print(f"\nProcessing row for item: {item_name}")
+                print(f"using key: {key}")
+                prices = extract_prices(row, key)
+                if prices is not None:  # Only add if we have any non-N/A price data
+                    data_item = {
+                        "type": "rice",
+                        "item": item_name,
+                        "pettah_wholesale": {
+                            "yesterday": prices[0],
+                            "today": prices[1],
+                        },
+                        "marandagahamula_wholesale": {
+                            "yesterday": prices[2],
+                            "today": prices[3],
+                        },
+                        "pettah_retail": {
+                            "yesterday": prices[4],
+                            "today": prices[5],
+                        },
+                        "dambulla_retail": {
+                            "yesterday": prices[6],
+                            "today": prices[7],
+                        },
+                        "narahenpita_retail": {
+                            "yesterday": prices[8],
+                            "today": prices[9],
+                        },
+                        "timestamp": datetime.now(),
+                    }
+                    all_data.append(data_item)
 
     # Process fish section
-    fish_start_idx, fish_end_idx = find_fish_section_boundaries(table, header_row_idx)
-    if fish_start_idx is not None and fish_end_idx is not None:
-        for row in table[fish_start_idx:fish_end_idx]:
-            if row and any(row):  # Skip empty rows
-                item_name = str(row[0]).strip() if row[0] else ""
-                if item_name and item_name.lower() != "item":
-                    print(f"\nProcessing row for item: {item_name}")
-                    print(f"using key: {key}")
-                    if (
-                        "Price of Chinese variety".lower() in item_name.lower()
-                        or "Price increased by mor".lower() in item_name.lower()
-                    ):
-                        continue
-                    prices = extract_prices(row, key)
-                    if (prices is not None):  # Only add if we have any non-N/A price data
-                        data_item = {
-                            "type": "fish",
-                            "item": item_name,
-                            "peliyagoda_wholesale": {
-                                "yesterday": prices[0],
-                                "today": prices[1],
-                            },
-                            "negombo_wholesale": {
-                                "yesterday": prices[2],
-                                "today": prices[3],
-                            },
-                            "pettah_retail": {
-                                "yesterday": prices[4],
-                                "today": prices[5],
-                            },
-                            "negombo_retail": {
-                                "yesterday": prices[6],
-                                "today": prices[7],
-                            },
-                            "narahenpita_retail": {
-                                "yesterday": prices[8],
-                                "today": prices[9],
-                            },
-                            "timestamp": datetime.now(),
-                        }
-                        all_data.append(data_item)
+    fish_start, fish_end = find_fish_section_boundaries(table, header_row_idx)
+    if fish_start and fish_end:
+        print("\nProcessing fish section...")
+        for row in table[fish_start:fish_end]:
+            item_name = row[0] if row and len(row) > 0 else None
+            if item_name and item_name.lower() != "item":
+                print(f"\nProcessing row for item: {item_name}")
+                print(f"using key: {key}")
+                if (
+                    "Price of Chinese variety".lower() in item_name.lower()
+                    or "Price increased by mor".lower() in item_name.lower()
+                ):
+                    continue
+                prices = extract_prices(row, key)
+                if prices is not None:  # Only add if we have any non-N/A price data
+                    data_item = {
+                        "type": "fish",
+                        "item": item_name,
+                        "peliyagoda_wholesale": {
+                            "yesterday": prices[0],
+                            "today": prices[1],
+                        },
+                        "negombo_wholesale": {
+                            "yesterday": prices[2],
+                            "today": prices[3],
+                        },
+                        "pettah_retail": {
+                            "yesterday": prices[4],
+                            "today": prices[5],
+                        },
+                        "negombo_retail": {
+                            "yesterday": prices[6],
+                            "today": prices[7],
+                        },
+                        "narahenpita_retail": {
+                            "yesterday": prices[8],
+                            "today": prices[9],
+                        },
+                        "timestamp": datetime.now(),
+                    }
+                    all_data.append(data_item)
 
     return all_data
 
@@ -886,135 +974,149 @@ def extract_pdf_data(pdf_path):
     """
     Extract tables from PDF using pdfplumber and return the data
     """
-    global should_process_pdf
+    global current_pdf_path, should_process_pdf, pdf_file
+    current_pdf_path = pdf_path  # Set the current PDF being processed
     should_process_pdf = None  # Reset the flag for each new PDF
+    
     try:
         print(f"Reading page 2 from {pdf_path}...")
-        with pdfplumber.open(pdf_path) as pdf:
-            # Get page 2 (0-based index)
-            page = pdf.pages[1]
+        pdf_file = pdfplumber.open(pdf_path)  # Store in global variable
+        # Get page 2 (0-based index)
+        page = pdf_file.pages[1]
 
-            # Extract table with specific settings
-            table = page.extract_table(
-                {
-                    "vertical_strategy": "text",
-                    "horizontal_strategy": "text",
-                    "intersection_y_tolerance": 10,
-                    "intersection_x_tolerance": 10,
-                    "snap_y_tolerance": 3,
-                    "snap_x_tolerance": 3,
-                    "join_tolerance": 3,
-                    "edge_min_length": 3,
-                    "min_words_vertical": 3,
-                    "min_words_horizontal": 1,
-                }
-            )
+        # Extract table with specific settings
+        table = page.extract_table(
+            {
+                "vertical_strategy": "text",
+                "horizontal_strategy": "text",
+                "intersection_y_tolerance": 10,
+                "intersection_x_tolerance": 10,
+                "snap_y_tolerance": 3,
+                "snap_x_tolerance": 3,
+                "join_tolerance": 3,
+                "edge_min_length": 3,
+                "min_words_vertical": 3,
+                "min_words_horizontal": 1,
+            }
+        )
 
-            if not table:
-                print(f"No table found on page 2 of {pdf_path}")
-                return None
+        if not table:
+            print(f"No table found on page 2 of {pdf_path}")
+            return None
 
-            # Print raw table data for debugging
-            # print("\nRaw table data:")
-            # for i, row in enumerate(table):
-            #     print(f"Row {i}: {row}")
+        # Print raw table data for debugging
+        # print("\nRaw table data:")
+        # for i, row in enumerate(table):
+        #     print(f"Row {i}: {row}")
 
-            # Get the date from filename (both formats: price_report_YYYYMMDD.pdf and price_report_YYYYMMDD_e.pdf)
-            filename = os.path.basename(pdf_path)
+        # Get the date from filename (both formats: price_report_YYYYMMDD.pdf and price_report_YYYYMMDD_e.pdf)
+        filename = os.path.basename(pdf_path)
 
-            # Try both patterns
-            match = re.match(r"price_report_(\d{8})(?:e(?:_?\d)?|_e(?:_?\d)?)?\.pdf", filename)
+        # Try both patterns
+        match = re.match(
+            r"price_report_(\d{8})(?:(?:e(?:_?\d)?|_e(?:_?\d)?)|_\d)?\.pdf",
+            filename,
+        )
 
-            if not match:
-                print(f"Error: Filename {filename} does not match expected format")
-                return None
+        if not match:
+            print(f"Error: Filename {filename} does not match expected format")
+            return None
 
-            date_str = match.group(1)  # Extract the date part (YYYYMMDD)
-            try:
-                date_obj = datetime.strptime(date_str, "%Y%m%d")
-            except ValueError:
-                print(f"Error: Invalid date format in filename {filename}")
-                return None
+        date_str = match.group(1)  # Extract the date part (YYYYMMDD)
+        try:
+            date_obj = datetime.strptime(date_str, "%Y%m%d")
+        except ValueError:
+            print(f"Error: Invalid date format in filename {filename}")
+            return None
 
-            # Process the table data
-            processed_data = process_table_data(table)
+        # Process the table data
+        processed_data = process_table_data(table)
 
-            # Split the data into different sections
-            vegetables_data = [
-                item for item in processed_data if item["type"] == "vegetables"
-            ]
-            other_data = [item for item in processed_data if item["type"] == "other"]
-            fruits_data = [item for item in processed_data if item["type"] == "fruits"]
-            rice_data = [item for item in processed_data if item["type"] == "rice"]
-            fish_data = [item for item in processed_data if item["type"] == "fish"]
+        # Split the data into different sections
+        vegetables_data = [
+            item for item in processed_data if item["type"] == "vegetables"
+        ]
+        other_data = [item for item in processed_data if item["type"] == "other"]
+        fruits_data = [item for item in processed_data if item["type"] == "fruits"]
+        rice_data = [item for item in processed_data if item["type"] == "rice"]
+        fish_data = [item for item in processed_data if item["type"] == "fish"]
 
-            # Create separate documents for each section
-            documents = []
+        # Create separate documents for each section
+        documents = []
 
-            if vegetables_data:
-                vegetables_document = {
-                    "date": date_obj,
-                    "type": "vegetables",
-                    "page": 2,
-                    "table_index": 0,
-                    "data": vegetables_data,
-                }
-                documents.append(vegetables_document)
+        if vegetables_data:
+            vegetables_document = {
+                "date": date_obj,
+                "type": "vegetables",
+                "page": 2,
+                "table_index": 0,
+                "data": vegetables_data,
+            }
+            documents.append(vegetables_document)
 
-            if other_data:
-                other_document = {
-                    "date": date_obj,
-                    "type": "other",
-                    "page": 2,
-                    "table_index": 1,
-                    "data": other_data,
-                }
-                documents.append(other_document)
+        if other_data:
+            other_document = {
+                "date": date_obj,
+                "type": "other",
+                "page": 2,
+                "table_index": 1,
+                "data": other_data,
+            }
+            documents.append(other_document)
 
-            if fruits_data:
-                fruits_document = {
-                    "date": date_obj,
-                    "type": "fruits",
-                    "page": 2,
-                    "table_index": 2,
-                    "data": fruits_data,
-                }
-                documents.append(fruits_document)
+        if fruits_data:
+            fruits_document = {
+                "date": date_obj,
+                "type": "fruits",
+                "page": 2,
+                "table_index": 2,
+                "data": fruits_data,
+            }
+            documents.append(fruits_document)
 
-            if rice_data:
-                rice_document = {
-                    "date": date_obj,
-                    "type": "rice",
-                    "page": 2,
-                    "table_index": 3,
-                    "data": rice_data,
-                }
-                documents.append(rice_document)
+        if rice_data:
+            rice_document = {
+                "date": date_obj,
+                "type": "rice",
+                "page": 2,
+                "table_index": 3,
+                "data": rice_data,
+            }
+            documents.append(rice_document)
 
-            if fish_data:
-                fish_document = {
-                    "date": date_obj,
-                    "type": "fish",
-                    "page": 2,
-                    "table_index": 4,
-                    "data": fish_data,
-                }
-                documents.append(fish_document)
+        if fish_data:
+            fish_document = {
+                "date": date_obj,
+                "type": "fish",
+                "page": 2,
+                "table_index": 4,
+                "data": fish_data,
+            }
+            documents.append(fish_document)
 
-            return documents
+        return documents
 
+    except PriceCleaningError as e:
+        print(f"Price cleaning error in {pdf_path}: {str(e)}")
+        return None
     except Exception as e:
         print(f"Error extracting data from {pdf_path}: {str(e)}")
         return None
+    finally:
+        if pdf_file:
+            pdf_file.close()
+            pdf_file = None
+        current_pdf_path = None  # Reset the current PDF path
 
 
 def main(specific_pdf=None):
     # Create necessary directories if they don't exist
     os.makedirs("reports", exist_ok=True)
     os.makedirs("data/processed", exist_ok=True)
+    os.makedirs("data/fail", exist_ok=True)
 
     # Define the regex patterns for both PDF file formats
-    pattern = r"^price_report_\d{8}(?:e(?:_?\d)?|_e(?:_?\d)?)?\.pdf$"
+    pattern = r"^price_report_\d{8}(?:(?:e(?:_?\d)?|_e(?:_?\d)?)|_\d)?\.pdf$"
 
     if specific_pdf:
         # Process specific PDF file
@@ -1039,13 +1141,25 @@ def main(specific_pdf=None):
 
             # Move the processed file to the processed folder
             filename = os.path.basename(specific_pdf)
-            # If file is from another location, copy to processed directory and keep original
             processed_path = os.path.join("data", "processed", filename)
-            os.rename(specific_pdf, processed_path)
-            print(f"Successfully processed and stored data from {filename}")
-            print(f"Copied {filename} to processed folder")
+            try:
+                if os.path.exists(specific_pdf):  # Check if file exists before moving
+                    os.rename(specific_pdf, processed_path)
+                    print(f"Successfully processed and stored data from {filename}")
+                    print(f"Moved {filename} to processed folder")
+            except Exception as e:
+                print(f"Error moving file to processed folder: {str(e)}")
         else:
             print(f"Failed to process {os.path.basename(specific_pdf)}")
+            # Move to fail directory
+            filename = os.path.basename(specific_pdf)
+            fail_path = os.path.join("data", "fail", filename)
+            try:
+                if os.path.exists(specific_pdf):  # Check if file exists before moving
+                    os.rename(specific_pdf, fail_path)
+                    print(f"Moved problematic PDF to {fail_path}")
+            except Exception as e:
+                print(f"Error moving file to fail directory: {str(e)}")
     else:
         # Process all PDF files in the data directory
         pdf_dir = "data"
@@ -1072,11 +1186,23 @@ def main(specific_pdf=None):
 
                     # Move the processed file to the processed folder
                     processed_path = os.path.join(pdf_dir, "processed", filename)
-                    os.rename(pdf_path, processed_path)
-                    print(f"Successfully processed and stored data from {filename}")
-                    print(f"Moved {filename} to processed folder")
+                    try:
+                        if os.path.exists(pdf_path):  # Check if file exists before moving
+                            os.rename(pdf_path, processed_path)
+                            print(f"Successfully processed and stored data from {filename}")
+                            print(f"Moved {filename} to processed folder")
+                    except Exception as e:
+                        print(f"Error moving file to processed folder: {str(e)}")
                 else:
                     print(f"Failed to process {filename}")
+                    # Move to fail directory
+                    fail_path = os.path.join(pdf_dir, "fail", filename)
+                    try:
+                        if os.path.exists(pdf_path):  # Check if file exists before moving
+                            os.rename(pdf_path, fail_path)
+                            print(f"Moved problematic PDF to {fail_path}")
+                    except Exception as e:
+                        print(f"Error moving file to fail directory: {str(e)}")
             else:
                 if filename.endswith(".pdf"):
                     print(
