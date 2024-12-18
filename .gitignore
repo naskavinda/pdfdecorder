@@ -35,6 +35,7 @@ ENV/
 
 # Project specific
 data/*
+!data/fail/
 data/processed/*
 
 *.pdf
