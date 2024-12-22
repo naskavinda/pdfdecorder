@@ -3,8 +3,10 @@ from datetime import datetime, timedelta
 import os
 
 # MongoDB connection
-client = MongoClient('mongodb://root:secret@localhost:27017/')
-db = client['central_bank']
+client = MongoClient(
+    "mongodb+srv://supun2kavinda:j5FyzeeBkNndXVqN@cluster0.lsdvd.mongodb.net/data-visualizer"
+)
+db = client["data-visualizer"]
 
 def format_price(price):
     """Format price to proper format"""
@@ -208,10 +210,14 @@ def generate_report():
     """Generate reports for all documents in the database"""
     # Create reports directory if it doesn't exist
     os.makedirs('reports', exist_ok=True)
-    
+    doc_data = db["row_data"].find(
+        {
+            "$or": [{"status": {"$exists": False}}, {"status": {"$ne": "processed"}}],
+        }
+    )
     # Group documents by date
     documents_by_date = {}
-    for doc in db['row_data'].find():
+    for doc in doc_data:
         date = doc.get('date')
         if date not in documents_by_date:
             documents_by_date[date] = {
@@ -220,7 +226,7 @@ def generate_report():
             }
         if 'data' in doc:
             documents_by_date[date]['data'].extend(doc['data'])
-    
+
     # Generate a report for each day
     for date, combined_doc in documents_by_date.items():
         if isinstance(date, datetime):

@@ -6,8 +6,10 @@ from pymongo import MongoClient
 from datetime import datetime, timedelta
 
 # MongoDB connection
-client = MongoClient("mongodb://root:secret@localhost:27017/")
-db = client["central_bank"]
+client = MongoClient(
+    "mongodb+srv://supun2kavinda:j5FyzeeBkNndXVqN@cluster0.lsdvd.mongodb.net/data-visualizer"
+)
+db = client["data-visualizer"]
 collection = db["row_data"]
 
 should_process_pdf = None
@@ -40,6 +42,7 @@ ORDER_VALUES = {
     "M_20_1": [3, 5, 7, 9, 11, 12, 14, 15, 17, 19],
     "M_20_2": [2, 5, 6, 9, 11, 12, 14, 15, 17, 19],
     "M_20_3": [3, 5, 6, 8, 10, 11, 13, 15, 17, 19],
+    "M_20_4": [3, 5, 6, 8, 10, 12, 14, 15, 17, 19],
     # M 21
     "M_21_1": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
     "M_21_2": [3, 5, 6, 8, 11, 13, 15, 16, 18, 20],
