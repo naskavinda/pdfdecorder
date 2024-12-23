@@ -65,10 +65,20 @@ def process_tourism_data(excel_file):
     # Process monthly data
     monthly_data = []
     for month in months:
+        # Calculate total by summing all country values
+        calculated_total = 0
+        for _, row in df.iterrows():
+            if pd.notna(row['No']) and str(row['No']).lower() != 'total' and pd.notna(row[month]):
+                calculated_total += float(row[month])
+        
+        # Get total from the total row
+        total_from_row = float(total_row[month]) if pd.notna(total_row[month]) else 0
+        
         month_data = {
             'year': year,
             'Month': month,
-            'total': float(total_row[month]) if pd.notna(total_row[month]) else 0
+            'total': total_from_row,  # Main total from row
+            'calculated_total': calculated_total  # Additional total from calculation
         }
         # Add data for each country
         for _, row in df.iterrows():
@@ -87,11 +97,17 @@ def process_tourism_data(excel_file):
         if not country or (pd.notna(row['No']) and str(row['No']).lower() == 'total'):
             continue
             
-        total = float(row['Total']) if pd.notna(row['Total']) else float(sum(row[month] for month in months if pd.notna(row[month])))
+        # Get total from 'Total' column
+        total_from_column = float(row['Total']) if pd.notna(row['Total']) else 0
+        
+        # Calculate total by summing monthly values
+        calculated_total = float(sum(row[month] for month in months if pd.notna(row[month])))
+        
         country_info = {
             'Year': year,
             'Country': country,
-            'total': total
+            'total': total_from_column,  # Total from 'Total' column
+            'calculated_total': calculated_total  # Total calculated from monthly values
         }
         # Add monthly data
         for month in months:
