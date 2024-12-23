@@ -5,6 +5,8 @@ import os
 import numpy as np
 from pymongo import MongoClient
 from dotenv import load_dotenv
+import shutil
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -20,6 +22,23 @@ client = MongoClient(MONGO_URI)
 db = client[DB_NAME]
 monthly_collection = db["tourism_monthly"]
 country_collection = db["tourism_country"]
+
+def move_to_processed(file_path):
+    # Create processed directory
+    processed_dir = Path('data/tourism/processed')
+    processed_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Move file to processed directory
+    file_path = Path(file_path)
+    new_path = processed_dir / file_path.name
+    
+    # If file with same name exists, add timestamp
+    if new_path.exists():
+        timestamp = datetime.now().strftime('%H-%M-%S')
+        new_path = processed_dir / f"{file_path.stem}_{timestamp}{file_path.suffix}"
+    
+    shutil.move(str(file_path), str(new_path))
+    print(f"Moved {file_path.name} to {new_path}")
 
 def clean_dataframe(df):
     # Skip the header rows and reset index
@@ -130,8 +149,10 @@ def save_to_mongodb(monthly_data, country_data, year):
             country_collection.insert_many(country_data)
             
         print(f"Successfully saved data for {year} to MongoDB")
+        return True
     except Exception as e:
         print(f"Error saving to MongoDB: {str(e)}")
+        return False
 
 def main():
     # Process all Excel files in the tourism directory
@@ -139,16 +160,23 @@ def main():
     for excel_file in tourism_dir.glob('*.xlsx'):
         print(f"Processing {excel_file}")
         
-        # Get the year from filename
-        year = int(Path(excel_file).stem.split('_')[2])
-        
-        # Process the data
-        monthly_data, country_data = process_tourism_data(excel_file)
-        
-        # Save to MongoDB
-        save_to_mongodb(monthly_data, country_data, year)
-        
-        print(f"Completed processing data for {year}")
+        try:
+            # Get the year from filename
+            year = int(Path(excel_file).stem.split('_')[2])
+            
+            # Process the data
+            monthly_data, country_data = process_tourism_data(excel_file)
+            
+            # Save to MongoDB
+            if save_to_mongodb(monthly_data, country_data, year):
+                # Move file to processed directory only if MongoDB save was successful
+                move_to_processed(excel_file)
+                print(f"Completed processing data for {year}")
+            else:
+                print(f"Failed to process {excel_file}")
+                
+        except Exception as e:
+            print(f"Error processing {excel_file}: {str(e)}")
 
 if __name__ == "__main__":
     main()
