@@ -49,16 +49,16 @@ def clean_dataframe(df, available_months):
     df = df.iloc[2:].reset_index(drop=True)
 
     numeric_columns = available_months.copy()
-    available_months.insert(0, "Country")
-    available_months.insert(0, "No")
-    available_months.append("Total")
+    available_months.insert(0, "country")
+    available_months.insert(0, "no")
+    available_months.append("total")
 
     print("\nAvailable months:", available_months)
 
     # Rename columns
     df.columns = available_months
 
-    numeric_columns.append("Total")
+    numeric_columns.append("total")
     print("\nNumeric columns:", numeric_columns)
     # Convert numeric columns to float, handling any non-numeric values
     for col in numeric_columns:
@@ -99,18 +99,18 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
 
     # List of all possible months
     all_months = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "october",
+        "november",
+        "december",
     ]
 
     available_months = df.columns[2 : 2 + ending_month_index + 1].tolist()
@@ -121,7 +121,7 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
     for month in available_months:
         month_data = {
             "year": year,
-            "Month": all_months[available_months.index(month)],
+            "month": all_months[available_months.index(month)],
         }
 
         # Calculate total for current month
@@ -136,7 +136,7 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
                 value = row[month]
                 if pd.notna(value):
                     calculated_total += float(value)
-                    month_data[country] = float(value)  # Add country data
+                    month_data[country.lower()] = float(value)  # Add country data
 
         # Get total from the last row for this month
         total_from_row = (
@@ -179,8 +179,8 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
             total_from_column = calculated_total
 
         country_info = {
-            "Year": year,
-            "Country": country,
+            "year": year,
+            "country": country.lower(),
             "total": total_from_column,  # Total from 'Total' column or calculated
             "calculated_total": calculated_total,  # Total calculated from monthly values
         }
@@ -206,7 +206,7 @@ def save_to_mongodb(monthly_data, country_data, year):
 
         # Delete existing data for the year
         monthly_result = monthly_collection.delete_many({"year": year})
-        country_result = country_collection.delete_many({"Year": year})
+        country_result = country_collection.delete_many({"year": year})
         print(f"Deleted existing monthly records: {monthly_result.deleted_count}")
         print(f"Deleted existing country records: {country_result.deleted_count}")
 
