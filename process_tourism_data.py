@@ -128,7 +128,10 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
         calculated_total = 0
         # Skip the last row (total row)
         for _, row in df.iloc[:-1].iterrows():
-            country = str(row["Country"]).strip()
+            # Get country column regardless of case
+            country_col = next((col for col in df.columns if col.upper() == "COUNTRY"), None)
+            if country_col:
+                country = str(row[country_col]).strip()
             if country and pd.notna(row["No"]):  # Valid country row
                 value = row[month]
                 if pd.notna(value):
@@ -151,7 +154,10 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
     # Process country-wise data
     country_data = []
     for _, row in df.iterrows():
-        country = str(row["Country"]).strip()
+        # Get country column regardless of case
+        country_col = next((col for col in df.columns if col.upper() == "COUNTRY"), None)
+        if country_col:
+            country = str(row[country_col]).strip()
         # Skip the total row and empty countries
         if not country or (pd.notna(row["No"]) and str(row["No"]).lower() == "total"):
             continue
