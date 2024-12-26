@@ -99,97 +99,69 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
 
     # List of all possible months
     all_months = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "october",
-        "november",
-        "december",
+        "january", "february", "march", "april", "may", "june",
+        "july", "august", "september", "october", "november", "december"
     ]
 
     available_months = df.columns[2 : 2 + ending_month_index + 1].tolist()
-
     print("\nAvailable months:", available_months)
+
     # Process monthly data
     monthly_data = []
     for month in available_months:
         month_data = {
             "year": year,
             "month": all_months[available_months.index(month)],
+            "countries": []
         }
 
-        # Calculate total for current month
-        calculated_total = 0
-        # Skip the last row (total row)
-        for _, row in df.iloc[:-1].iterrows():
-            # Get country column regardless of case
+        # Process each country for the current month
+        for _, row in df.iloc[:-1].iterrows():  # Skip the last row (total row)
             country_col = next((col for col in df.columns if col.upper() == "COUNTRY"), None)
             if country_col:
                 country = str(row[country_col]).strip()
             if country and pd.notna(row["No"]):  # Valid country row
                 value = row[month]
                 if pd.notna(value):
-                    calculated_total += float(value)
-                    month_data[country.lower()] = float(value)  # Add country data
-
-        # Get total from the last row for this month
-        total_from_row = (
-            float(df.iloc[-1][month])
-            if pd.notna(df.iloc[-1][month])
-            else calculated_total
-        )
-
-        # Add totals to month_data
-        month_data["total"] = total_from_row
-        month_data["calculated_total"] = calculated_total
+                    month_data["countries"].append({
+                        "name": country.lower(),
+                        "value": float(value)
+                    })
 
         monthly_data.append(month_data)
 
-    # Process country-wise data
+    # Process country-wise data (keeping this part unchanged for backward compatibility)
     country_data = []
     for _, row in df.iterrows():
-        # Get country column regardless of case
         country_col = next((col for col in df.columns if col.upper() == "COUNTRY"), None)
         if country_col:
             country = str(row[country_col]).strip()
-        # Skip the total row and empty countries
         if not country or (pd.notna(row["No"]) and str(row["No"]).lower() == "total"):
             continue
 
-        # Get total from 'Total' column if it exists
         total_from_column = (
             float(row["Total"])
             if "Total" in df.columns and pd.notna(row["Total"])
             else 0
         )
 
-        # Calculate total by summing available monthly values
         calculated_total = float(
             sum(row[month] for month in available_months if pd.notna(row[month]))
         )
 
-        # If no total column or total is 0, use calculated total
         if total_from_column == 0:
             total_from_column = calculated_total
 
         country_info = {
             "year": year,
             "country": country.lower(),
-            "total": total_from_column,  # Total from 'Total' column or calculated
-            "calculated_total": calculated_total,  # Total calculated from monthly values
+            "total": total_from_column,
+            "calculated_total": calculated_total,
         }
-        # Add monthly data for available months
+        
         for month in available_months:
             if pd.notna(row[month]):
-                country_info[all_months[available_months.index(month)]] = float(
-                    row[month]
-                )
+                country_info[all_months[available_months.index(month)]] = float(row[month])
         country_data.append(country_info)
 
     return monthly_data, country_data
