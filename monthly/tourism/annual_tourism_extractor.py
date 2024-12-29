@@ -1,24 +1,21 @@
-from pymongo import MongoClient
 import logging
 import os
-from dotenv import load_dotenv
+from pathlib import Path
+import sys
 
-# Load environment variables
-load_dotenv()
+# Add root directory to Python path
+root_dir = Path(__file__).resolve().parents[2]
+root_dir_str = str(root_dir)
+if root_dir_str not in sys.path:
+    sys.path.append(root_dir_str)
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from database.mongodb import get_database
 
 def connect_to_mongodb():
     try:
-        mongodb_uri = os.getenv('MONGODB_URI')
-        db_name = os.getenv('MONGODB_DB_NAME')
-        client = MongoClient(mongodb_uri)
-        db = client[db_name]
-        return db
+        return get_database()
     except Exception as e:
-        logger.error(f"Error connecting to MongoDB: {e}")
+        print(f"Error connecting to MongoDB: {e}")
         raise
 
 def create_annual_tourism_data():
@@ -30,8 +27,24 @@ def create_annual_tourism_data():
         # Get all unique years from monthly collection
         years = monthly_collection.distinct('year')
         
+        # Expected months (all lowercase)
+        expected_months = ['january', 'february', 'march', 'april', 'may', 'june', 
+                         'july', 'august', 'september', 'october', 'november', 'december']
+        
         # Process each year
         for year in years:
+            # Check if year exists in annual collection
+            existing_data = annual_collection.find_one({'year': year})
+            
+            if existing_data:
+                # Check if any month is missing
+                missing_months = [month for month in expected_months if month not in existing_data]
+                if not missing_months:
+                    print(f"Year {year} has complete data. Skipping.")
+                    continue
+                
+                print(f"Found missing months for year {year}: {missing_months}. Reprocessing entire year.")
+            
             # Get all monthly documents for this year
             monthly_docs = list(monthly_collection.find({'year': year}))
             
@@ -56,16 +69,16 @@ def create_annual_tourism_data():
                 upsert=True
             )
             
-            logger.info(f"Processed year {year} with total: {annual_total}")
-            logger.info(f"Monthly breakdown for {year}: {update_data}")
+            print(f"Processed year {year} with total: {annual_total}")
+            print(f"Monthly breakdown for {year}: {update_data}")
             
     except Exception as e:
-        logger.error(f"Error processing annual tourism data: {e}")
+        print(f"Error processing annual tourism data: {e}")
         raise
 
 if __name__ == "__main__":
     try:
         create_annual_tourism_data()
-        logger.info("Annual tourism data processing completed successfully")
+        print("Annual tourism data processing completed successfully")
     except Exception as e:
-        logger.error(f"Failed to process annual tourism data: {e}")
+        print(f"Failed to process annual tourism data: {e}")
