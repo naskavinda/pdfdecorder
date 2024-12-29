@@ -5,23 +5,20 @@ from pathlib import Path
 import os
 import numpy as np
 from pandas.io.sql import _process_parse_dates_argument
-from pymongo import MongoClient
-from dotenv import load_dotenv
 import shutil
 from datetime import datetime
+import sys
 
-# Load environment variables
-load_dotenv()
+# Add root directory to Python path
+root_dir = Path(__file__).resolve().parents[2]
+root_dir_str = str(root_dir)
+if root_dir_str not in sys.path:
+    sys.path.append(root_dir_str)
 
-# MongoDB connection
-MONGO_URI = os.getenv("MONGODB_URI")
-DB_NAME = os.getenv("MONGODB_DB_NAME", "data-visualizer")
+from database.mongodb import get_database
 
-if not MONGO_URI:
-    raise ValueError("MONGO_URI environment variable is not set")
-
-client = MongoClient(MONGO_URI)
-db = client[DB_NAME]
+# Get MongoDB database connection
+db = get_database()
 monthly_collection = db["tourism_monthly"]
 country_collection = db["tourism_country"]
 
@@ -210,17 +207,32 @@ def main():
     # Process all Excel files in the tourism directory
     tourism_dir = Path("data/tourism")
     for excel_file in tourism_dir.glob("*.xlsx"):
-        print(f"Processing {excel_file}")
+        print(f"Found file: {excel_file}")
 
         try:
-            # Get the year from filename
-            file_name = Path(excel_file).stem.split("_")
-            year = int(file_name[2])
+            # Check if filename matches the required pattern
+            file_name = excel_file.stem.split("_")
+            if (
+                len(file_name) != 5
+                or file_name[0] != "All"
+                or file_name[1] != "Countries"
+            ):
+                print(
+                    f"Skipping {excel_file}: Does not match required format 'All_Countries_<YEAR>_<MONTH>_<MONTH>.xlsx'"
+                )
+                continue
+
+            try:
+                year = int(file_name[2])
+            except ValueError:
+                print(f"Skipping {excel_file}: Year {file_name[2]} is not a valid number")
+                continue
+
             starting_month = file_name[3]
             ending_month = file_name[4]
 
             # month is in short format I need to get number of months from starting month to ending month. but we have string months
-            month = [
+            valid_months = [
                 "Jan",
                 "Feb",
                 "Mar",
@@ -234,10 +246,17 @@ def main():
                 "Nov",
                 "Dec",
             ]
-            starting_month_index = month.index(starting_month)
-            ending_month_index = month.index(ending_month)
+            if starting_month not in valid_months or ending_month not in valid_months:
+                print(f"Skipping {excel_file}: Months must be in short format (Jan, Feb, etc.)")
+                continue
+
+            print(f"Processing {excel_file}")
+
+            starting_month_index = valid_months.index(starting_month)
+            ending_month_index = valid_months.index(ending_month)
             print(f"Starting month index: {starting_month_index}")
             print(f"Ending month index: {ending_month_index}")
+
             # Process the data
             monthly_data, country_data = process_tourism_data(
                 excel_file, year, starting_month_index, ending_month_index
