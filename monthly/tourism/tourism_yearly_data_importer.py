@@ -13,10 +13,6 @@ if root_dir_str not in sys.path:
 
 from database.mongodb import get_database
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 def process_excel_data(file_path):
     try:
         # Read the Excel file
