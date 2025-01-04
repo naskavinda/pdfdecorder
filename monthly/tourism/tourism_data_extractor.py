@@ -111,6 +111,8 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
             "month": all_months[available_months.index(month)],
             "countries": []
         }
+        # Calculate total for current month
+        calculated_total = 0
 
         # Process each country for the current month
         for _, row in df.iloc[:-1].iterrows():  # Skip the last row (total row)
@@ -120,10 +122,23 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
             if country and pd.notna(row["No"]):  # Valid country row
                 value = row[month]
                 if pd.notna(value):
+                    calculated_total += float(value)
                     month_data["countries"].append({
                         "name": country.lower(),
                         "value": float(value)
                     })
+
+        print(f"Calculated total for {month}: {calculated_total}")
+        # Get total from the last row for this month
+        total_from_row = (
+            float(df.iloc[-1][month])
+            if pd.notna(df.iloc[-1][month])
+            else calculated_total
+        )
+
+        # Add totals to month_data
+        month_data["total"] = total_from_row
+        month_data["calculated_total"] = calculated_total
 
         monthly_data.append(month_data)
 
@@ -155,7 +170,9 @@ def process_tourism_data(excel_file, year, starting_month_index, ending_month_in
             "total": total_from_column,
             "calculated_total": calculated_total,
         }
-        
+
+        print(f"Country: {country_info}")
+
         for month in available_months:
             if pd.notna(row[month]):
                 country_info[all_months[available_months.index(month)]] = float(row[month])
@@ -225,7 +242,9 @@ def main():
             try:
                 year = int(file_name[2])
             except ValueError:
-                print(f"Skipping {excel_file}: Year {file_name[2]} is not a valid number")
+                print(
+                    f"Skipping {excel_file}: Year {file_name[2]} is not a valid number"
+                )
                 continue
 
             starting_month = file_name[3]
@@ -247,7 +266,9 @@ def main():
                 "Dec",
             ]
             if starting_month not in valid_months or ending_month not in valid_months:
-                print(f"Skipping {excel_file}: Months must be in short format (Jan, Feb, etc.)")
+                print(
+                    f"Skipping {excel_file}: Months must be in short format (Jan, Feb, etc.)"
+                )
                 continue
 
             print(f"Processing {excel_file}")
