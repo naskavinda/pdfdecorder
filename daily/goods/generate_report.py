@@ -1,12 +1,20 @@
 from pymongo import MongoClient
 from datetime import datetime, timedelta
 import os
+from pathlib import Path
+from datetime import datetime, timedelta
+import sys
 
-# MongoDB connection
-client = MongoClient(
-    "mongodb+srv://supun2kavinda:j5FyzeeBkNndXVqN@cluster0.lsdvd.mongodb.net/data-visualizer"
-)
-db = client["data-visualizer"]
+# Add root directory to Python path
+root_dir = Path(__file__).resolve().parents[2]
+root_dir_str = str(root_dir)
+if root_dir_str not in sys.path:
+    sys.path.append(root_dir_str)
+
+from database.mongodb import get_database
+
+# Get MongoDB database connection
+db = get_database()
 
 def format_price(price):
     """Format price to proper format"""

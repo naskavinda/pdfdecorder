@@ -2,14 +2,20 @@ import os
 import re
 import pdfplumber
 import pandas as pd
-from pymongo import MongoClient
+from pathlib import Path
 from datetime import datetime, timedelta
+import sys
 
-# MongoDB connection
-client = MongoClient(
-    "mongodb+srv://supun2kavinda:j5FyzeeBkNndXVqN@cluster0.lsdvd.mongodb.net/data-visualizer"
-)
-db = client["data-visualizer"]
+# Add root directory to Python path
+root_dir = Path(__file__).resolve().parents[2]
+root_dir_str = str(root_dir)
+if root_dir_str not in sys.path:
+    sys.path.append(root_dir_str)
+
+from database.mongodb import get_database
+
+# Get MongoDB database connection
+db = get_database()
 collection = db["row_data"]
 
 should_process_pdf = None
@@ -43,6 +49,7 @@ ORDER_VALUES = {
     "M_20_2": [2, 5, 6, 9, 11, 12, 14, 15, 17, 19],
     "M_20_3": [3, 5, 6, 8, 10, 11, 13, 15, 17, 19],
     "M_20_4": [3, 5, 6, 8, 10, 12, 14, 15, 17, 19],
+    "M_20_5": [3, 4, 6, 8, 10, 11, 13, 15, 17, 19],
     # M 21
     "M_21_1": [4, 6, 7, 10, 12, 13, 15, 17, 19, 20],
     "M_21_2": [3, 5, 6, 8, 11, 13, 15, 16, 18, 20],
@@ -86,6 +93,9 @@ ORDER_VALUES = {
     "O_18_3": [3, 5, 6, 8, 10, 11, 12, 13, 15, 17],
     "O_18_4": [3, 5, 6, 8, 9, 10, 11, 13, 15, 17],
     "O_18_5": [2, 4, 5, 7, 9, 11, 12, 14, 15, 17],
+    "O_18_6": [2, 4, 6, 8, 9, 10, 12, 13, 15, 17],
+    "O_18_7": [3, 5, 6, 8, 9, 11, 12, 13, 15, 17],
+    "O_18_8": [3, 4, 6, 8, 9, 10, 12, 14, 15, 17],
     # O 19
     "O_19_1": [3, 5, 6, 8, 9, 10, 12, 14, 16, 18],
     "O_19_2": [3, 5, 7, 9, 11, 12, 14, 15, 16, 18],
@@ -103,6 +113,7 @@ ORDER_VALUES = {
     "O_20_9": [3, 5, 6, 8, 10, 11, 13, 15, 17, 19],
     "O_20_10": [3, 5, 6, 8, 11, 12, 13, 15, 17, 19],
     "O_20_11": [3, 4, 5, 7, 10, 11, 13, 15, 17, 19],
+    "O_20_12": [3, 5, 7, 9, 11, 12, 14, 16, 18, 19],
     # O 21
     "O_21_1": [3, 4, 7, 9, 12, 14, 15, 17, 19, 20],
     "O_21_2": [2, 3, 5, 8, 10, 12, 14, 16, 18, 20],
@@ -118,6 +129,7 @@ ORDER_VALUES = {
     "O_21_12": [3, 5, 6, 8, 10, 12, 14, 16, 18, 20],
     "O_21_13": [3, 5, 7, 9, 11, 12, 14, 16, 18, 20],
     "O_21_14": [3, 5, 7, 9, 12, 13, 15, 16, 18, 20],
+    "O_21_15": [3, 5, 7, 9, 10, 12, 14, 16, 18, 20],
     # O 22
     "O_22_1": [2, 3, 5, 8, 11, 13, 15, 17, 19, 21],
     "O_22_2": [3, 5, 7, 10, 12, 13, 15, 17, 19, 21],
